@@ -18,14 +18,14 @@
 <meta name="twitter:title" content="mycelium · slides">
 <meta name="twitter:description" content="Slides from talks and workshops about Mycelium, each deck at its own link.">
 <meta name="twitter:image" content="https://mycelium-io.github.io/slides/og.png">
-<meta name="theme-color" content="#134cd1">
+<meta name="theme-color" content="#1f4aa6">
 <link rel="icon" type="image/png" href="logo-256.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Geist+Mono:wght@400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-  /* The org site's look (mycelium-io.github.io, site.css): its palette and
-     type, and the top of its page, the glass droplets on the cobalt field. */
+  /* A quieter cousin of the org site (mycelium-io.github.io, site.css): its
+     palette, type and buttons, on its cobalt field without the glass. */
   :root {
     --night: #0b0d12;
     --ink: #eaecef;
@@ -33,7 +33,6 @@
     --cyan: #5dd4e0;
     --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --serif: 'Cormorant Garamond', Georgia, serif;
-    --mono: 'Geist Mono', 'SF Mono', Menlo, monospace;
     --wrap: 1320px;
     --gutter: clamp(16px, 5vw, 64px);
     --edge: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
@@ -45,7 +44,9 @@
     min-height: 100svh;
     display: flex;
     flex-direction: column;
-    background: #134cd1;
+    /* The org site's cobalt field, a step quieter: less saturated, no glass,
+       and settling toward the night at the foot of the page. */
+    background: linear-gradient(to bottom, #1f4aa6, #2d62a8 55%, #2a4f7e) fixed;
     color: var(--ink);
     font: 400 16px/1.6 var(--sans);
     -webkit-font-smoothing: antialiased;
@@ -54,34 +55,6 @@
   ::selection { background: rgba(93, 212, 224, 0.3); color: #fff; }
   a { color: inherit; text-decoration: none; }
   :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 4px; }
-
-  /* The glass, drawn live by glass.js, fixed behind the page. */
-  #glass, .glass-fallback {
-    position: fixed; inset: 0; width: 100%; height: 100%;
-    z-index: -1; pointer-events: none;
-  }
-  .glass-fallback { display: none; }
-  .no-webgl #glass { display: none; }
-  .no-webgl .glass-fallback {
-    display: block;
-    background:
-      radial-gradient(circle at 72% 50%, rgba(255, 255, 255, 0.22), transparent 22%),
-      linear-gradient(to bottom, #134cd1, #2c7ad8 55%, #4aa4dc);
-  }
-  .glass-labels { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-  .glass-labels span {
-    position: absolute; left: 0; top: 0; opacity: 0;
-    display: flex; align-items: center; gap: 6px;
-    font: 11px var(--mono); letter-spacing: 0.02em;
-    color: rgba(255, 255, 255, 0.82); white-space: nowrap;
-    will-change: transform, opacity;
-  }
-  .glass-labels span::before {
-    content: ''; width: 14px; height: 1px; background: currentColor; opacity: 0.5;
-    transform: rotate(-38deg); transform-origin: right center;
-  }
-  .glass-labels .is-you { color: #7cf0c2; }
-  .glass-labels .is-aligner { color: #e2d2ff; }
 
   .nav {
     height: 64px;
@@ -106,7 +79,7 @@
   .hero-inner { max-width: 640px; }
   h1 {
     font-weight: 600;
-    font-size: clamp(46px, 5.4vw, 78px);
+    font-size: clamp(40px, 4.4vw, 62px);
     line-height: 0.98;
     letter-spacing: -0.045em;
     color: #fff;
@@ -169,12 +142,11 @@
   footer a { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.4); text-underline-offset: 3px; }
   footer a:hover { color: #fff; }
 
-  /* On a narrow screen the glass sits below the words (see the script). */
   @media (max-width: 860px) {
     .nav { gap: 14px; }
     .nav-links { gap: 14px; }
     .nav-links .wide { display: none; }
-    .hero { align-items: flex-start; padding-top: 32px; padding-bottom: 46vh; }
+    .hero { align-items: flex-start; padding-top: 32px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .line > span, .sub, .decks, .actions { transition: none; }
@@ -182,10 +154,6 @@
 </style>
 </head>
 <body>
-
-<canvas id="glass" aria-hidden="true"></canvas>
-<div class="glass-fallback" aria-hidden="true"></div>
-<div class="glass-labels" id="glass-labels" aria-hidden="true"></div>
 
 <header class="nav">
   <a class="nav-brand" href="https://mycelium-io.github.io"><img src="logo-256.png" alt="" width="22" height="22">mycelium</a>
@@ -220,25 +188,8 @@
   <a href="https://mycelium-io.github.io">mycelium-io.github.io</a> · Open source, Apache 2.0
 </footer>
 
-<script src="glass.js"></script>
 <script>
-  // The glass holds the org site's opening pose: five droplets apart on the
-  // cobalt field, to the right of the words, or below them on a narrow screen.
-  // The wide pose mirrors HERO in the org site's site.js.
-  (function () {
-    function place() {
-      if (!window.Glass) return;
-      var vh = window.innerHeight, narrow = window.innerWidth / vh <= 1.05;
-      window.Glass.set({
-        merge: 0, dusk: 0, alpha: 1, scale: 1, veins: 0.2, halo: 0, logo: 0,
-        x: narrow ? 0.5 : 0.77,
-        y: narrow ? 0.84 : 0.45 + 64 / vh,
-      });
-    }
-    place();
-    window.addEventListener('resize', place);
-    requestAnimationFrame(function () { document.documentElement.classList.add('is-ready'); });
-  })();
+  requestAnimationFrame(function () { document.documentElement.classList.add('is-ready'); });
 </script>
 </body>
 </html>
