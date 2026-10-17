@@ -195,10 +195,10 @@ right angle and `data-axis="h"` or `"v"` picks the direction. A wire can be a
 The "Who we are" slide reads `people/julia.jpg` and `people/jodee.jpg`.
 Third-party images (screenshots of posts and announcements, other companies'
 logos, other people's slides) go in `media/`, shown with
-`<figure class="media" data-media="name.png" data-alt="…">`. Both folders are
-in this folder's `.gitignore`, since the repo is public and the site is served
-from it, so on a fresh clone
-those slides show a placeholder naming the missing file until you drop it in.
+`<figure class="media" data-media="name.png" data-alt="…">`, and are published
+with the deck. `people/` is in this folder's `.gitignore`, since the site is
+served from this public repo, so those slides show a placeholder naming the
+missing photo until you drop it in.
 
 ## Writing slides
 

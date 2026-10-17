@@ -1,5 +1,4 @@
-# Photos of people and third-party images (screenshots of posts, news,
-# other people's slides) stay out of this public repo. The deck shows a
-# placeholder where one is missing.
+# Photos of people stay out of this public repo until the person says yes.
+# The deck shows a placeholder where one is missing. The third-party images
+# the slides show (media/) are published with the deck.
 people/
-media/
