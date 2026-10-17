@@ -53,6 +53,7 @@
     overflow-x: clip;
   }
   ::selection { background: rgba(93, 212, 224, 0.3); color: #fff; }
+  #motes { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
   a { color: inherit; text-decoration: none; }
   :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 4px; }
 
@@ -154,6 +155,7 @@
 </style>
 </head>
 <body>
+<canvas id="motes" aria-hidden="true"></canvas>
 
 <header class="nav">
   <a class="nav-brand" href="https://mycelium-io.github.io"><img src="logo-256.png" alt="" width="22" height="22">mycelium</a>
@@ -190,6 +192,72 @@
 
 <script>
   requestAnimationFrame(function () { document.documentElement.classList.add('is-ready'); });
+
+  // The motes from the org site's glass (its `spores`), without the droplets:
+  // two layers drifting upward and twinkling. The near layer is big and out of
+  // focus and moves faster; the far one is small and sharp. Both lean a little
+  // with the pointer. With reduced motion they hold still.
+  (function () {
+    var canvas = document.getElementById('motes');
+    var g = canvas && canvas.getContext('2d');
+    if (!g) return;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var W, H, dpr, motes = [];
+    var LAYERS = [
+      { per: 5, r: [12, 34], alpha: 0.07, speed: 0.06, sway: 0.22, soft: true },
+      { per: 44, r: [2.3, 6.4], alpha: 0.2, speed: 0.03, sway: 0.08, soft: false },
+    ];
+    var mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    function rand(a, b) { return a + Math.random() * (b - a); }
+    function build() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth; H = window.innerHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+      motes = [];
+      LAYERS.forEach(function (L) {
+        // `per` is how many to a square of the screen's height, as in the shader.
+        var n = Math.round(L.per * (W / H));
+        for (var i = 0; i < n; i++) {
+          motes.push({ L: L, x: Math.random() * W, y: Math.random() * H, r: rand(L.r[0], L.r[1]), ph: Math.random() * 40 });
+        }
+      });
+    }
+    function draw(t) {
+      g.clearRect(0, 0, W, H);
+      mouse.x += (mouse.tx - mouse.x) * 0.04;
+      mouse.y += (mouse.ty - mouse.y) * 0.04;
+      for (var i = 0; i < motes.length; i++) {
+        var m = motes[i], L = m.L;
+        var y = ((m.y - t * L.speed * H) % (H + 80) + H + 80) % (H + 80) - 40;
+        var x = m.x - mouse.x * L.sway * H * 0.1;
+        var y2 = y - mouse.y * L.sway * H * 0.1;
+        var a = L.alpha * (0.65 + 0.35 * Math.sin(t * 1.3 + m.ph));
+        if (L.soft) {
+          var grad = g.createRadialGradient(x, y2, 0, x, y2, m.r);
+          grad.addColorStop(0, 'rgba(255,255,255,' + a.toFixed(3) + ')');
+          grad.addColorStop(0.15, 'rgba(255,255,255,' + a.toFixed(3) + ')');
+          grad.addColorStop(1, 'rgba(255,255,255,0)');
+          g.fillStyle = grad;
+        } else {
+          g.fillStyle = 'rgba(255,255,255,' + a.toFixed(3) + ')';
+        }
+        g.beginPath(); g.arc(x, y2, m.r, 0, 6.2832); g.fill();
+      }
+    }
+    var start = performance.now();
+    function frame(now) {
+      draw((now - start) / 1000);
+      requestAnimationFrame(frame);
+    }
+    window.addEventListener('pointermove', function (e) {
+      mouse.tx = (e.clientX / W - 0.5) * 2;
+      mouse.ty = (e.clientY / H - 0.5) * 2;
+    }, { passive: true });
+    window.addEventListener('resize', function () { build(); if (reduced) draw(0); });
+    build();
+    if (reduced) draw(0); else requestAnimationFrame(frame);
+  })();
 </script>
 </body>
 </html>
