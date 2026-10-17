@@ -285,7 +285,7 @@ p code, li code { font-size: 0.82em; padding: 0.08em 0.36em; border-radius: 8px;
 
 /* ── Layout: three tall columns (a frame used twice) ── */
 .triad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; margin-top: 60px; }
-.triad .box { min-height: 380px; padding: 40px 40px 44px; display: flex; flex-direction: column; gap: 20px; }
+.triad .box { min-height: 380px; padding: 40px 40px 44px; display: flex; flex-direction: column; gap: 20px; text-align: center; }
 .triad .box h3 { font: 600 46px/1.05 var(--sans); letter-spacing: -0.025em; }
 .triad .box p { margin: 0; font-size: 30px; line-height: 1.4; color: var(--muted); }
 .triad .box.warn h3 { color: var(--red); }
