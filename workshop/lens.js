@@ -43,7 +43,9 @@ vec3 ground(vec2 uv){
   vec2 b = (uv-vec2(.08,-.08))*vec2(aspect,1.);
   float glow = exp(-length(a*vec2(.8,1.3))*2.2);
   float low = exp(-length(b*vec2(.9,1.2))*2.6);
-  vec3 night = vec3(.043,.051,.071) + vec3(.05,.2,.58)*glow*.55 + vec3(.25,.12,.42)*low*.22;
+  // The deck's background (#14161a), with a faint slate lift in the top
+  // corner where the cobalt glow used to be.
+  vec3 night = vec3(.078,.086,.102) + vec3(.06,.07,.09)*glow*.55 + vec3(.03,.035,.04)*low*.22;
   vec3 sky = mix(vec3(.953,.965,.99), vec3(.86,.9,.98), smoothstep(.05,1.,uv.y));
   sky = mix(sky, vec3(.66,.78,.98), glow*.38);
   sky = mix(sky, vec3(.84,.8,.97), low*.3);
