@@ -4,82 +4,241 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mycelium · slides</title>
-<meta name="description" content="Slides from talks and workshops about Mycelium.">
-<meta name="theme-color" content="#0b0d12">
+<meta name="description" content="Slides from talks and workshops about Mycelium, each deck at its own link.">
+<meta property="og:title" content="mycelium · slides">
+<meta property="og:description" content="Slides from talks and workshops about Mycelium, each deck at its own link.">
+<meta property="og:image" content="https://mycelium-io.github.io/slides/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Many agents. One outcome. Five iridescent glass droplets, labelled as agents, joined in a ring on a cobalt field.">
+<meta property="og:url" content="https://mycelium-io.github.io/slides/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="mycelium">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="mycelium · slides">
+<meta name="twitter:description" content="Slides from talks and workshops about Mycelium, each deck at its own link.">
+<meta name="twitter:image" content="https://mycelium-io.github.io/slides/og.png">
+<meta name="theme-color" content="#134cd1">
 <link rel="icon" type="image/png" href="logo-256.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Geist+Mono:wght@400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
+  /* The org site's look (mycelium-io.github.io, site.css): its palette and
+     type, and the top of its page, the glass droplets on the cobalt field. */
   :root {
     --night: #0b0d12;
     --ink: #eaecef;
-    --ink-2: #a9afb7;
-    --ink-3: #8b929b;
     --line: rgba(255, 255, 255, 0.08);
-    --cobalt: #1f62d6;
+    --cyan: #5dd4e0;
     --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     --serif: 'Cormorant Garamond', Georgia, serif;
+    --mono: 'Geist Mono', 'SF Mono', Menlo, monospace;
+    --wrap: 1320px;
+    --gutter: clamp(16px, 5vw, 64px);
+    --edge: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
     color-scheme: dark;
   }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    margin: 0;
-    min-height: 100vh;
-    background: var(--night);
-    color: var(--ink);
-    font: 400 17px/1.6 var(--sans);
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
-  }
-  main {
-    width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: clamp(48px, 12vh, 140px) 16px 48px;
-    flex: 1;
-  }
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
+    background: #134cd1;
     color: var(--ink);
-    text-decoration: none;
-    font-weight: 500;
+    font: 400 16px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
   }
+  ::selection { background: rgba(93, 212, 224, 0.3); color: #fff; }
+  a { color: inherit; text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 4px; }
+
+  /* The glass, drawn live by glass.js, fixed behind the page. */
+  #glass, .glass-fallback {
+    position: fixed; inset: 0; width: 100%; height: 100%;
+    z-index: -1; pointer-events: none;
+  }
+  .glass-fallback { display: none; }
+  .no-webgl #glass { display: none; }
+  .no-webgl .glass-fallback {
+    display: block;
+    background:
+      radial-gradient(circle at 72% 50%, rgba(255, 255, 255, 0.22), transparent 22%),
+      linear-gradient(to bottom, #134cd1, #2c7ad8 55%, #4aa4dc);
+  }
+  .glass-labels { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .glass-labels span {
+    position: absolute; left: 0; top: 0; opacity: 0;
+    display: flex; align-items: center; gap: 6px;
+    font: 11px var(--mono); letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.82); white-space: nowrap;
+    will-change: transform, opacity;
+  }
+  .glass-labels span::before {
+    content: ''; width: 14px; height: 1px; background: currentColor; opacity: 0.5;
+    transform: rotate(-38deg); transform-origin: right center;
+  }
+  .glass-labels .is-you { color: #7cf0c2; }
+  .glass-labels .is-aligner { color: #e2d2ff; }
+
+  .nav {
+    height: 64px;
+    display: flex; align-items: center; gap: 32px;
+    padding: 0 var(--gutter);
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 9px;
+    font: italic 600 26px/1 var(--serif); letter-spacing: -0.01em;
+  }
+  .nav-brand img { width: 22px; height: 22px; transform: translateY(2px); }
+  .nav-links { margin-left: auto; display: flex; align-items: center; gap: 28px; font-size: 14px; }
+  .nav-links a { color: rgba(255, 255, 255, 0.78); transition: color 0.2s; }
+  .nav-links a:hover { color: #fff; }
+  .nav-gh { display: flex; padding: 6px; }
+
+  .hero {
+    flex: 1;
+    display: flex; align-items: center;
+    padding: 48px var(--gutter) 72px var(--edge);
+  }
+  .hero-inner { max-width: 640px; }
   h1 {
-    font: 500 clamp(44px, 9vw, 72px)/1.05 var(--serif);
-    margin: 48px 0 16px;
+    font-weight: 600;
+    font-size: clamp(46px, 5.4vw, 78px);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: #fff;
+    margin-bottom: 28px;
   }
-  h1 em { color: var(--ink-2); }
-  p { color: var(--ink-2); margin: 0 0 16px; }
-  .empty {
-    margin-top: 40px;
-    padding: 20px 0;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    color: var(--ink-3);
+  .line { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .line > span { display: inline-block; transform: translateY(108%); transition: transform 1.1s var(--ease); }
+  .line + .line > span { transition-delay: 0.12s; }
+  .is-ready .line > span { transform: none; }
+  .line--serif {
+    font: italic 500 1.14em/0.92 var(--serif);
+    letter-spacing: -0.025em;
   }
-  a { color: var(--ink); text-decoration-color: var(--cobalt); text-underline-offset: 3px; }
+  .sub {
+    font-size: clamp(17px, 1.6vw, 20px);
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 30em;
+    margin-bottom: 30px;
+  }
+  /* Where the decks will be listed: a pane of frosted glass. */
+  .decks {
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    padding: 20px 22px;
+    margin-bottom: 30px;
+  }
+  .decks h2 { font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.8); margin-bottom: 6px; }
+  .decks p { color: #fff; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 46px; padding: 0 22px; border-radius: 999px;
+    font-size: 15px; font-weight: 500; white-space: nowrap;
+    transition: transform 0.3s var(--ease), background 0.2s, box-shadow 0.3s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-light { background: #fff; color: #0b1a3c; }
+  .btn-light:hover { box-shadow: 0 10px 30px -10px rgba(255, 255, 255, 0.6); }
+  .btn-glass {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .btn-glass:hover { background: rgba(255, 255, 255, 0.18); }
+  .sub, .decks, .actions { opacity: 0; transform: translateY(16px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+  .is-ready .sub { opacity: 1; transform: none; transition-delay: 0.3s; }
+  .is-ready .decks { opacity: 1; transform: none; transition-delay: 0.42s; }
+  .is-ready .actions { opacity: 1; transform: none; transition-delay: 0.54s; }
+
   footer {
-    max-width: 720px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 24px 16px 40px;
-    color: var(--ink-3);
+    padding: 20px var(--gutter) 28px var(--edge);
     font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  footer a { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.4); text-underline-offset: 3px; }
+  footer a:hover { color: #fff; }
+
+  /* On a narrow screen the glass sits below the words (see the script). */
+  @media (max-width: 860px) {
+    .nav { gap: 14px; }
+    .nav-links { gap: 14px; }
+    .nav-links .wide { display: none; }
+    .hero { align-items: flex-start; padding-top: 32px; padding-bottom: 46vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .line > span, .sub, .decks, .actions { transition: none; }
   }
 </style>
 </head>
 <body>
-<main>
-  <a class="brand" href="https://mycelium-io.github.io"><img src="logo-256.png" alt="" width="22" height="22">mycelium</a>
-  <h1>Slides</h1>
-  <p>Decks from our talks and workshops, each at its own link, to open in a browser.</p>
-  <p class="empty">Nothing here yet. The first workshop deck is coming soon.</p>
+
+<canvas id="glass" aria-hidden="true"></canvas>
+<div class="glass-fallback" aria-hidden="true"></div>
+<div class="glass-labels" id="glass-labels" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav-brand" href="https://mycelium-io.github.io"><img src="logo-256.png" alt="" width="22" height="22">mycelium</a>
+  <nav class="nav-links" aria-label="Mycelium">
+    <a class="wide" href="https://mycelium-io.github.io/mycelium/learn.html">Learn</a>
+    <a href="https://mycelium-io.github.io/mycelium/">Docs</a>
+    <a class="nav-gh" href="https://github.com/mycelium-io/mycelium" aria-label="GitHub">
+      <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+    </a>
+  </nav>
+</header>
+
+<main class="hero">
+  <div class="hero-inner">
+    <h1>
+      <span class="line"><span>Slides from our</span></span>
+      <span class="line line--serif"><span>talks and workshops.</span></span>
+    </h1>
+    <p class="sub">Each deck opens in your browser at its own link, as it was presented.</p>
+    <section class="decks" aria-labelledby="decks-title">
+      <h2 id="decks-title">Decks</h2>
+      <p>Nothing here yet. The first workshop deck is coming soon.</p>
+    </section>
+    <div class="actions">
+      <a class="btn btn-light" href="https://mycelium-io.github.io">About Mycelium</a>
+      <a class="btn btn-glass" href="https://github.com/mycelium-io/mycelium">Star on GitHub</a>
+    </div>
+  </div>
 </main>
+
 <footer>
-  <a href="https://mycelium-io.github.io">mycelium-io.github.io</a> · <a href="https://github.com/mycelium-io/mycelium">GitHub</a>
+  <a href="https://mycelium-io.github.io">mycelium-io.github.io</a> · Open source, Apache 2.0
 </footer>
+
+<script src="glass.js"></script>
+<script>
+  // The glass holds the org site's opening pose: five droplets apart on the
+  // cobalt field, to the right of the words, or below them on a narrow screen.
+  // The wide pose mirrors HERO in the org site's site.js.
+  (function () {
+    function place() {
+      if (!window.Glass) return;
+      var vh = window.innerHeight, narrow = window.innerWidth / vh <= 1.05;
+      window.Glass.set({
+        merge: 0, dusk: 0, alpha: 1, scale: 1, veins: 0.2, halo: 0, logo: 0,
+        x: narrow ? 0.5 : 0.77,
+        y: narrow ? 0.84 : 0.45 + 64 / vh,
+      });
+    }
+    place();
+    window.addEventListener('resize', place);
+    requestAnimationFrame(function () { document.documentElement.classList.add('is-ready'); });
+  })();
+</script>
 </body>
 </html>
