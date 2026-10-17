@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>mycelium · slides</title>
+<meta name="description" content="Slides from talks and workshops about Mycelium.">
+<meta name="theme-color" content="#0b0d12">
+<link rel="icon" type="image/png" href="logo-256.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+  :root {
+    --night: #0b0d12;
+    --ink: #eaecef;
+    --ink-2: #a9afb7;
+    --ink-3: #8b929b;
+    --line: rgba(255, 255, 255, 0.08);
+    --cobalt: #1f62d6;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--night);
+    color: var(--ink);
+    font: 400 17px/1.6 var(--sans);
+    display: flex;
+    flex-direction: column;
+  }
+  main {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(48px, 12vh, 140px) 16px 48px;
+    flex: 1;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  h1 {
+    font: 500 clamp(44px, 9vw, 72px)/1.05 var(--serif);
+    margin: 48px 0 16px;
+  }
+  h1 em { color: var(--ink-2); }
+  p { color: var(--ink-2); margin: 0 0 16px; }
+  .empty {
+    margin-top: 40px;
+    padding: 20px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-3);
+  }
+  a { color: var(--ink); text-decoration-color: var(--cobalt); text-underline-offset: 3px; }
+  footer {
+    max-width: 720px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+    color: var(--ink-3);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <a class="brand" href="https://mycelium-io.github.io"><img src="logo-256.png" alt="" width="22" height="22">mycelium</a>
+  <h1>Slides</h1>
+  <p>Decks from our talks and workshops, each at its own link, to open in a browser.</p>
+  <p class="empty">Nothing here yet. The first workshop deck is coming soon.</p>
+</main>
+<footer>
+  <a href="https://mycelium-io.github.io">mycelium-io.github.io</a> · <a href="https://github.com/mycelium-io/mycelium">GitHub</a>
+</footer>
+</body>
+</html>
