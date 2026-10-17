@@ -113,9 +113,18 @@
   }
   .decks h2 { font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.8); margin-bottom: 6px; }
   .decks p { color: #fff; }
-  .decks a { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.4); text-underline-offset: 3px; }
-  .decks a:hover { text-decoration-color: #fff; }
-  .decks em { font: italic 500 1.2em/1 var(--serif); }
+  .deck { display: block; margin-top: 10px; }
+  .deck img {
+    display: block; width: 100%; height: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
+    transition: transform 0.4s var(--ease);
+  }
+  .deck:hover img { transform: translateY(-2px); }
+  .deck p { margin-top: 12px; }
+  .deck em { font: italic 500 1.2em/1 var(--serif); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.4); text-underline-offset: 3px; }
+  .deck:hover em { text-decoration-color: #fff; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; }
   .btn {
     display: inline-flex; align-items: center; gap: 8px;
@@ -180,7 +189,10 @@
     <p class="sub">Each deck opens in your browser at its own link, as it was presented.</p>
     <section class="decks" aria-labelledby="decks-title">
       <h2 id="decks-title">Decks</h2>
-      <p><a href="workshop/"><em>Your agent, my agent, one room</em></a>: a talk on agents working together, then a hands-on workshop with Mycelium.</p>
+      <a class="deck" href="workshop/">
+        <img src="workshop/og.png" alt="The deck's title slide" width="1200" height="630" loading="lazy">
+        <p><em>Your agent, my agent, one room</em>: a talk on agents working together, then a hands-on workshop with Mycelium.</p>
+      </a>
     </section>
     <div class="actions">
       <a class="btn btn-light" href="https://mycelium-io.github.io">About Mycelium</a>
