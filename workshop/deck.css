@@ -289,6 +289,19 @@ p code, li code { font-size: 0.82em; padding: 0.08em 0.36em; border-radius: 8px;
 .triad .box h3 { font: 600 46px/1.05 var(--sans); letter-spacing: -0.025em; }
 .triad .box p { margin: 0; font-size: 30px; line-height: 1.4; color: var(--muted); }
 .triad .box.warn h3 { color: var(--red); }
+/* A slide that turns over in place on one click (.step.flip): each .now
+ * gives way to the .then stacked in the same spot, and the boxes go red. */
+.turn .heads, .turn .say { display: grid; }
+.turn .heads > *, .turn .say > * { grid-area: 1 / 1; }
+.turn .now, .turn .then { transition: opacity 0.5s ease; }
+.turn .then { opacity: 0; }
+.turn:has(.flip.shown) .now { opacity: 0; }
+.turn:has(.flip.shown) .then { opacity: 1; }
+.turn .triad .box { transition: border-color 0.5s ease; }
+.turn .triad .box h3 { transition: color 0.5s ease; }
+.turn:has(.flip.shown) .triad .box { border-color: color-mix(in srgb, var(--red) 55%, transparent); }
+.turn:has(.flip.shown) .triad .box h3 { color: var(--red); }
+.turn .credit { margin-bottom: -70px; }
 .credit { margin-top: 26px; font: 400 24px var(--sans); color: var(--muted); }
 
 /* ── Media: an image or clip from media/, or a placeholder naming it ── */

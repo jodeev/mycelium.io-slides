@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://mycelium-io.github.io/slides/workshop/og.png">
 <link rel="icon" href="logo.png">
 <!-- Bump ?v= when deck.css changes: Pages lets browsers keep it for ten minutes. -->
-<link rel="stylesheet" href="deck.css?v=3">
+<link rel="stylesheet" href="deck.css?v=4">
 </head>
 <body>
 <canvas id="lens-bg" aria-hidden="true"></canvas>
@@ -192,33 +192,27 @@
     </aside>
   </section>
 
-  <!-- ── What they lacked: three columns ── -->
-  <section class="slide" data-title="What they lacked">
-    <h2 class="rise" style="margin-top:20px">What they were <em>missing</em></h2>
-    <div class="triad">
-      <div class="box rise"><h3>Shared intent</h3><p>Without it, each agent works toward its own idea of the goal.</p></div>
-      <div class="box rise"><h3>Shared context</h3><p>Without it, agents work from different facts, and nobody notices.</p></div>
-      <div class="box rise"><h3>Shared reasoning</h3><p>Without it, nobody can see why a decision was made, or check it.</p></div>
+  <!-- ── What they lacked, then (one click) where the same three break ──
+       One slide that turns over in place: the heading, the descriptions and
+       the line under them change, and the three boxes stay put. -->
+  <section class="slide turn" data-title="What they lacked, and where it breaks">
+    <div class="heads rise" style="margin-top:20px">
+      <h2 class="now">What they were <em>missing</em></h2>
+      <h2 class="then">The same three are where it <em>breaks</em></h2>
     </div>
-    <p class="credit rise">A frame from the Internet of Cognition team</p>
+    <div class="triad">
+      <div class="box rise"><h3>Shared intent</h3><div class="say"><p class="now">Without it, each agent works toward its own idea of the goal.</p><p class="then">Agents take on goals that nobody asked for.</p></div></div>
+      <div class="box rise"><h3>Shared context</h3><div class="say"><p class="now">Without it, agents work from different facts, and nobody notices.</p><p class="then">One unchecked fact spreads until everyone treats it as true.</p></div></div>
+      <div class="box rise"><h3>Shared reasoning</h3><div class="say"><p class="now">Without it, nobody can see why a decision was made, or check it.</p><p class="then">Agents agree because the others agreed, not because they checked.</p></div></div>
+    </div>
+    <p class="credit rise now">A frame from the Internet of Cognition team</p>
+    <p class="flat-caption then">Agents coordinate whether you design for it or not.</p>
+    <i class="step beat flip"></i>
     <aside class="notes">
       <p>Our colleagues on the Internet of Cognition team describe what agents need to work together in three layers.</p>
       <p><b>Shared intent:</b> everyone agrees on what they're trying to do. <b>Shared context:</b> everyone works from the same facts. <b>Shared reasoning:</b> everyone can see how a decision was reached, and check it.</p>
       <p>The rest of the talk hangs on these three.</p>
-    </aside>
-  </section>
-
-  <!-- ── The same three layers are where it breaks ── -->
-  <section class="slide" data-title="Where it breaks">
-    <h2 class="rise" style="margin-top:20px">The same three are where it <em>breaks</em></h2>
-    <div class="triad">
-      <div class="box warn rise"><h3>Shared intent</h3><p>Agents take on goals that nobody asked for.</p></div>
-      <div class="box warn rise"><h3>Shared context</h3><p>One unchecked fact spreads until everyone treats it as true.</p></div>
-      <div class="box warn rise"><h3>Shared reasoning</h3><p>Agents agree because the others agreed, not because they checked.</p></div>
-    </div>
-    <p class="flat-caption rise">Agents coordinate whether you design for it or not.</p>
-    <aside class="notes">
-      <p>Turn the same frame around, and it shows where things go wrong.</p>
+      <p><b>Click:</b> turn the same frame around, and it shows where things go wrong.</p>
       <p>Intent breaks when agents take on goals nobody authorized. Context breaks when one unchecked fact spreads until everyone treats it as true. Reasoning breaks as false consensus: agents agreeing because the others did.</p>
       <p>The point: agents coordinate whether you design for it or not. So it's worth designing for.</p>
     </aside>
