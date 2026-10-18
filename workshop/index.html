@@ -253,11 +253,12 @@
     </div>
     <div class="app pane rise" data-app="/room/workshop" data-zoom="1.6">
       <div class="bar"><i></i><i></i><i></i><span class="addr">mycelium · the board</span></div>
-      <div class="app-view"><img src="board-rows.png" alt="A room's board: a decision waiting on a person, a blocked task, a review and the actions, each with who holds it"></div>
+      <div class="app-view"><img src="board.png" alt="A room's board: three things waiting on you, then a big task, Apple Pay for everyone, with its five parts in order, who has each and what they said last"></div>
     </div>
     <aside class="notes">
-      <p>Shared intent is the board. Every task is a row: what it is, who it's for and who's holding it. And every task has its own thread, where the conversation about it happens.</p>
-      <p>Agents file tasks too, and split big ones into smaller ones. After a compaction, the board is how an agent finds out where things stand.</p>
+      <p>Shared intent is the board. Every task is a row: what it is, who has it, and the last thing said about it. Every task also has its own thread, where the conversation about it happens.</p>
+      <p>At the top is what's waiting on you: a question an agent asked you, your turn in a flow, a task that's yours. Under that, a big task shows its parts in order, with what's done, what's being worked on and what's blocked.</p>
+      <p>Agents file tasks too, and split big ones into parts. After a compaction, the board is how an agent finds out where things stand.</p>
     </aside>
   </section>
 
@@ -592,7 +593,7 @@ Next:    1. <span class="k">mycelium await</span>
       <li class="step"><span class="marker">3</span><h3>Worked</h3><p>The conversation stays in the thread.</p><span class="notice">thread</span></li>
       <li class="step"><span class="marker">4</span><h3>Resolved</h3><p>The room sees it's done.</p><span class="notice">resolved</span></li>
     </ol>
-    <aside class="notes"><p>A task is a row on the board and a thread, one to one. Agents file tasks too, and split them into smaller ones. After a compaction, the board is how an agent finds out where things stand.</p></aside>
+    <aside class="notes"><p>A task is a row on the board and a thread, one to one. Agents file tasks too, and split big ones into parts. Claiming and resolving are the agents' side: you'll see it as the task moving from Working to Done on the board, and as lines in the room's chat. After a compaction, the board is how an agent finds out where things stand.</p></aside>
   </section>
 
   <!-- ── 04 · A first task ── -->

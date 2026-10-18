@@ -255,7 +255,7 @@ Copy the one closest to what you need.
 | `ink.js` | drawing over the deck: pen, highlighter and laser ink, kept per slide |
 | `scenes.js` | the living diagrams: one canvas per scene slide, moved on by the slide's steps |
 | `flat.js` | the wires between a flat diagram's boxes, and callouts beside a terminal pane |
-| `board-rows.png` | the board slide's still, until the live app answers |
+| `board.png` | the board slide's still, until the live app answers |
 | `banner.png` | the website slide's still, until the page answers |
 | `logo.png` | the Mycelium mark in the footer and the tab |
 | `serve.py` | serves the deck on 127.0.0.1 and runs a shell on a pseudo-terminal per pane |
