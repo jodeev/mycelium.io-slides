@@ -709,7 +709,7 @@
           ctx.beginPath(); ctx.roundRect(PANEL.x, PANEL.y, PANEL.w, PANEL.h, 18); ctx.fill(); ctx.globalAlpha = vis.panel * 0.6; ctx.stroke();
           ctx.restore();
           d.label('merged by code, not a model', PANEL.x, PANEL.y - 30, vis.panel * (1 - vis.saved), C.muted, 18, 'left');
-          d.label('context/summary/apple-pay', PANEL.x, PANEL.y - 30, vis.saved, C.accent, 19, 'left');
+          d.label('context/summary/apple-pay-for-everyone', PANEL.x, PANEL.y - 30, vis.saved, C.accent, 19, 'left');
         }
 
         // Who said each point, at the end of its row.
