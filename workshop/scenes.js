@@ -613,6 +613,216 @@
     };
   };
 
+  // A point or an option as the app shows one: a rounded card with an
+  // optional mono label before its text. x is its left edge, y its middle.
+  // `o.stroke` outlines it in a colour (a flag), `o.dash` dashes the outline.
+  const SANS = '500 26px "IBM Plex Sans", system-ui, sans-serif';
+  const MONO = '400 18px "IBM Plex Mono", ui-monospace, monospace';
+  function card(d, x, y, kind, text, a, o = {}) {
+    if (a < 0.01) return;
+    const ctx = d.ctx;
+    ctx.save(); ctx.globalAlpha = a; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+    ctx.font = MONO; const kw = kind ? ctx.measureText(kind).width + 16 : 0;
+    ctx.font = SANS; const w = 44 + kw + ctx.measureText(text).width, h = 56;
+    ctx.fillStyle = C.dark ? 'rgba(255,255,255,0.05)' : 'rgba(10,20,40,0.05)';
+    ctx.beginPath(); ctx.roundRect(x, y - h / 2, w, h, 12); ctx.fill();
+    ctx.strokeStyle = o.stroke || C.muted; ctx.lineWidth = o.stroke ? 3 : 1.5;
+    if (!o.stroke) ctx.globalAlpha = a * 0.45;
+    if (o.dash) ctx.setLineDash([9, 7]);
+    ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = a;
+    if (kind) { ctx.font = MONO; ctx.fillStyle = o.stroke || C.muted; ctx.fillText(kind, x + 22, y + 1); }
+    ctx.font = SANS; ctx.fillStyle = C.text; ctx.fillText(text, x + 22 + kw, y + 1);
+    ctx.restore();
+  }
+  // A bracket down the left of two rows, naming what's wrong between them.
+  function bracket(d, x, y0, y1, text, color, a) {
+    if (a < 0.01) return;
+    const ctx = d.ctx;
+    ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x + 12, y0); ctx.lineTo(x, y0); ctx.lineTo(x, y1); ctx.lineTo(x + 12, y1); ctx.stroke(); ctx.restore();
+    d.label(text, x - 36, (y0 + y1) / 2, a, color, 19, 'right');
+  }
+
+  // ── Accord: one shared picture of the task ──
+  // The demo's checkout room: three agents start "Apple Pay for everyone".
+  // Stage 0: each has its own idea of what done means. Stage 1: each writes
+  // its points, each under a label. Stage 2: code merges them into one
+  // summary; points that say the same thing combine and keep who said them,
+  // a contradiction is lit red, a point only one agent made stays, dashed,
+  // and a word used two ways is lit. Stage 3: the two who used the word
+  // differently restate it, and it merges. Stage 4: the summary is saved to
+  // memory with what's still open, and later work in the task reads it.
+  defs.accord = () => {
+    const rnd = seeded(73);
+    const COLORS = ['accent', 'violet', 'green'];
+    const agents = [['@builder', 410], ['@reviewer', 630], ['@qa', 850]]
+      .map(([name, y], i) => Object.assign(node(230, y, 30, 1), { name, color: COLORS[i] }));
+    const OBJ = 'Apple Pay at checkout', SW = 'Behind a switch first';
+    const TERM = ['everyone: all users', 'everyone: all users', 'everyone: US users'];
+    const RESTATED = 'everyone: all users in the US';
+    // [who, label, text, its row in the summary]
+    const pts = [
+      [0, 'objective', OBJ, 0], [0, 'constraint', SW, 1], [0, 'done', 'Merged to main', 2], [0, 'term', TERM[0], 5],
+      [1, 'objective', OBJ, 0], [1, 'constraint', SW, 1], [1, 'done', 'Merged to main', 2],
+      [2, 'objective', OBJ, 0], [2, 'done', 'Works on a real iPhone', 3], [2, 'out of scope', 'Google Pay', 4], [2, 'term', TERM[2], 6],
+    ].map(([who, kind, text, row]) => Object.assign(node(320, agents[who].y), { who, kind, text, row }));
+    pts.forEach(p => { p.k = pts.filter(q => q.who === p.who).indexOf(p); });
+    const PANEL = { x: 1000, y: 290, w: 760, h: 620 };
+    const rowY = r => PANEL.y + 64 + r * 84;
+    const rowOf = (p, s) => (p.kind === 'term' && s >= 3 ? 5 : p.row);
+    // Before the merge: each agent's points in two rows beside it; on the
+    // first stage only its idea of done, level with it.
+    const home = (p, s) => (s === 0 ? { x: 320, y: agents[p.who].y } : { x: 320 + (p.k % 2) * 470, y: agents[p.who].y + (p.k < 2 ? -36 : 36) });
+    const worker = Object.assign(node(560, 640, 0, 0), { name: 'later work' });
+    const vis = { panel: 0, flags: 0, terms: 0, saved: 0 };
+    let pulses = [], clock = 0;
+    return {
+      stage(s) {
+        pulses = []; clock = 0;
+        pts.forEach(p => { if (p.kind === 'term') p.text = s >= 3 ? RESTATED : TERM[p.who]; });
+      },
+      frame(d, dt, s) {
+        clock += dt;
+        ease(vis, 'panel', s >= 2 ? 1 : 0, 4, dt);
+        ease(vis, 'flags', s >= 2 ? 1 : 0, 3, dt);
+        ease(vis, 'terms', s === 2 ? 1 : 0, 4, dt);
+        ease(vis, 'saved', s >= 4 ? 1 : 0, 4, dt);
+        agents.forEach(n => { n.ta = s >= 4 ? 0.3 : 1; settle(n, dt); });
+        pts.forEach(p => {
+          const row = rowOf(p, s);
+          const t = s >= 2 ? { x: PANEL.x + 34, y: rowY(row) } : home(p, s);
+          p.tx = t.x; p.ty = t.y;
+          // In the summary a point several agents made is one card: the
+          // copies after the first fade once they land on it.
+          const first = pts.find(q => rowOf(q, s) === row) === p;
+          p.ta = s === 0 ? (p.kind === 'done' ? 1 : 0) : s >= 2 && !first && dist(p, t) < 8 ? 0 : 1;
+          settle(p, dt, 3.2);
+        });
+        worker.tr = s >= 4 ? 30 : 0; worker.ta = s >= 4 ? 1 : 0; settle(worker, dt);
+        const ctx = d.ctx;
+
+        // The summary's panel.
+        if (vis.panel > 0.01) {
+          ctx.save(); ctx.globalAlpha = vis.panel;
+          ctx.fillStyle = C.dark ? 'rgba(255,255,255,0.03)' : 'rgba(10,20,40,0.03)';
+          ctx.strokeStyle = vis.saved > 0.5 ? C.accent : C.muted; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.roundRect(PANEL.x, PANEL.y, PANEL.w, PANEL.h, 18); ctx.fill(); ctx.globalAlpha = vis.panel * 0.6; ctx.stroke();
+          ctx.restore();
+          d.label('merged by code, not a model', PANEL.x, PANEL.y - 30, vis.panel * (1 - vis.saved), C.muted, 18, 'left');
+          d.label('context/summary/apple-pay', PANEL.x, PANEL.y - 30, vis.saved, C.accent, 19, 'left');
+        }
+
+        // Who said each point, at the end of its row.
+        const rows = [...new Set(pts.map(p => rowOf(p, s)))];
+        rows.forEach(r => {
+          const who = [...new Set(pts.filter(p => rowOf(p, s) === r).map(p => p.who))];
+          who.forEach((w, j) => d.bead(PANEL.x + PANEL.w - 40 - j * 32, rowY(r), 10, C[COLORS[w]], vis.panel));
+        });
+
+        // The flags: never resolved, only shown.
+        bracket(d, PANEL.x + 16, rowY(2), rowY(3), 'contradicts', C.red, vis.flags);
+        d.label('only @qa said this', PANEL.x + 384, rowY(4), vis.flags, C.yellow, 18, 'left');
+        bracket(d, PANEL.x + 16, rowY(5), rowY(6), 'used two ways', C.yellow, vis.terms);
+        d.label('restated', PANEL.x + 520, rowY(5), s === 3 ? Math.min(1, clock) : 0, C.green, 18, 'left');
+        d.label('still open: what done means · Google Pay', PANEL.x, PANEL.y + PANEL.h + 40, vis.saved, C.muted, 19, 'left');
+
+        // Later work in the task reads the summary.
+        if (s >= 4 && clock > 1) {
+          clock = 0;
+          pulses.push({ a: { x: PANEL.x, y: rowY(Math.floor(rnd() * 6)) }, b: worker, u: 0 });
+        }
+        pulses.forEach(p => { p.u += dt * 1.1; if (p.u >= 1) worker.flash = 1; d.pulse(p.a, p.b, Math.min(1, p.u), C.accent, 0.1); });
+        pulses = pulses.filter(p => p.u < 1);
+
+        pts.forEach(p => {
+          const row = rowOf(p, s), inPanel = s >= 2;
+          const o = !inPanel ? {} : row === 2 || row === 3 ? { stroke: C.red } : row === 4 ? { stroke: C.yellow, dash: true } : (row === 5 || row === 6) && s === 2 ? { stroke: C.yellow } : {};
+          card(d, p.x, p.y, p.kind, p.text, p.a, o);
+        });
+        agents.forEach(n => {
+          d.bead(n.x, n.y, n.r, C[n.color], n.a);
+          d.label(n.name, n.x, n.y + 58, n.a, C.muted, 18);
+        });
+        d.bead(worker.x, worker.y, worker.r * (1 + worker.flash * 0.2), C.accent, worker.a);
+        d.label('later work in the task', worker.x, worker.y + 60, worker.a, C.accent, 18);
+        worker.flash = Math.max(0, worker.flash - dt * 2.5);
+      },
+    };
+  };
+
+  // ── Concord: one option nobody is steamrolled by ──
+  // The demo's checkout question: refund double charges automatically, or
+  // send them to support? Stage 0: each member proposes one option. Stage 1:
+  // everyone rates every option at once. Stage 2: each option's least happy
+  // rating is lit, and the pick is the option whose least happy member is
+  // best off (not the loudest one, which leaves @reviewer at 30). Stage 3:
+  // the pick is below the bar, so its least happy member proposes a fix,
+  // which everyone rates. Stage 4: the fix clears the bar and is saved.
+  defs.concord = () => {
+    const MEMBERS = [['@builder', 'accent'], ['@reviewer', 'green'], ['you', 'violet']];
+    const COLX = [1110, 1290, 1470], MINX = 1640, BAR = 70, X0 = 250, X1 = 1730;
+    const rows = [
+      { letter: 'A', text: 'Refund automatically', by: 0, r: [90, 30, 60] },
+      { letter: 'B', text: 'Send to support first', by: 1, r: [40, 85, 55] },
+      { letter: 'C', text: 'Under $50 refund, the rest to support', by: 2, r: [75, 65, 80] },
+      { letter: 'C′', text: 'C, and support checks each refund', by: 1, r: [78, 74, 82], fix: true },
+    ].map(o => ({ ...o, a: 0, shown: [0, 0, 0], low: 0, lit: 0, min: Math.min(...o.r) }));
+    const rowY = i => 410 + i * 104;
+    const PICK = 2, FIX = 3;
+    let clock = 0;
+    return {
+      stage() { clock = 0; },
+      frame(d, dt, s) {
+        clock += dt;
+        const ctx = d.ctx;
+        // The header: who rates, and each option's least happy rating.
+        MEMBERS.forEach(([name, color], j) => {
+          d.bead(COLX[j], 300, 14, C[color], 1);
+          d.label(name, COLX[j], 340, 1, C.muted, 18);
+        });
+        d.label('least happy', MINX, 340, s >= 2 ? 1 : 0.3, C.muted, 18);
+        d.label(`bar ${BAR}`, MINX, 300, s >= 3 ? 1 : 0, C.yellow, 17);
+
+        rows.forEach((o, i) => {
+          const here = o.fix ? s >= 3 : true;
+          // Proposals land one after another; ratings all at once.
+          o.a = approach(o.a, here && (o.fix || clock > i * 0.5 || s > 0) ? (s === 4 && !o.fix ? 0.35 : 1) : 0, 5, dt);
+          const rated = o.fix ? s >= 3 && clock > 1.2 : s >= 1;
+          o.r.forEach((v, j) => { o.shown[j] = approach(o.shown[j], rated ? v : 0, 3, dt); });
+          ease(o, 'low', (o.fix ? s >= 3 && clock > 2.2 : s >= 2) ? 1 : 0, 4, dt);
+          ease(o, 'lit', (s === 2 && i === PICK) || (s >= 3 && o.fix && clock > 2.2) ? 1 : 0, 4, dt);
+          if (o.a < 0.01) return;
+          const y = rowY(i);
+          ctx.save(); ctx.globalAlpha = o.a;
+          ctx.fillStyle = C.dark ? 'rgba(255,255,255,0.04)' : 'rgba(10,20,40,0.04)';
+          ctx.beginPath(); ctx.roundRect(X0, y - 40, X1 - X0, 80, 14); ctx.fill();
+          if (o.lit > 0.01) { ctx.globalAlpha = o.a * o.lit; ctx.strokeStyle = C.accent; ctx.lineWidth = 3; ctx.stroke(); }
+          ctx.restore();
+          d.bead(X0 + 34, y, 11, C[MEMBERS[o.by][1]], o.a);
+          d.label(o.letter, X0 + 74, y, o.a, C.accent, 26, 'left');
+          ctx.save(); ctx.globalAlpha = o.a; ctx.font = SANS; ctx.fillStyle = C.text; ctx.textBaseline = 'middle';
+          ctx.fillText(o.text, X0 + 134, y + 1); ctx.restore();
+          o.r.forEach((v, j) => {
+            const isMin = v === o.min;
+            const ring = o.lit > 0.5 ? C.accent : i === 0 && s === 2 ? C.red : i === PICK && s >= 3 ? C.yellow : C.muted;
+            if (isMin) d.ring(COLX[j], y, 32, ring, o.a * o.low * 0.9, 2.5);
+            if (o.shown[j] > 0.5) d.label(String(Math.round(o.shown[j])), COLX[j], y, o.a, C.text, 26);
+          });
+          // The least happy rating, against the bar once there is one.
+          const col = s >= 3 && (i === PICK || o.fix) ? (o.min >= BAR ? C.green : C.yellow) : o.lit > 0.5 ? C.accent : C.text;
+          d.label(String(o.min) + (s >= 3 && o.fix && o.min >= BAR ? '  ✓' : ''), MINX, y, o.a * o.low, col, 28);
+        });
+
+        // What each stage leaves you with, under the table.
+        const below = rowY(FIX) + 110;
+        d.label('The loudest option, A, would leave @reviewer at 30.', X0, below, s === 2 ? 1 : 0, C.red, 21, 'left');
+        d.label('C is below the bar for @reviewer, so @reviewer proposes a fix and everyone rates it.', X0, below, s === 3 ? 1 : 0, C.yellow, 21, 'left');
+        d.label('Saved to context/decision/double-charges.', X0, below, s === 4 ? 1 : 0, C.accent, 21, 'left');
+        d.label('If nothing clears the bar, it says so: no option works for everyone.', X0, below + 44, s === 4 ? 0.8 : 0, C.muted, 19, 'left');
+      },
+    };
+  };
+
   // ════ Running them ════
   const live = [];
   document.querySelectorAll('canvas.scene[data-scene]').forEach(canvas => {

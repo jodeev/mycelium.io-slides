@@ -523,7 +523,8 @@ svg.timeline text.hi { fill: var(--accent); }
 .swap [data-at] { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; transform: translateY(14px); filter: blur(6px); transition: opacity 0.5s, transform 0.5s, filter 0.5s; }
 .slide:not([data-stage]) .swap [data-at="0"],
 .slide[data-stage="0"] .swap [data-at="0"], .slide[data-stage="1"] .swap [data-at="1"],
-.slide[data-stage="2"] .swap [data-at="2"], .slide[data-stage="3"] .swap [data-at="3"] { opacity: 1; transform: none; filter: none; }
+.slide[data-stage="2"] .swap [data-at="2"], .slide[data-stage="3"] .swap [data-at="3"],
+.slide[data-stage="4"] .swap [data-at="4"] { opacity: 1; transform: none; filter: none; }
 .step.beat { display: none; }
 .stages { position: absolute; left: 150px; right: 150px; bottom: 140px; margin: 0; padding: 0; list-style: none; display: flex; justify-content: center; gap: 70px; font: italic 600 44px var(--display); color: var(--faint); }
 .stages li { transition: color 0.4s; }

@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://mycelium-io.github.io/slides/workshop/og.png">
 <link rel="icon" href="logo.png">
 <!-- Bump ?v= when deck.css changes: Pages lets browsers keep it for ten minutes. -->
-<link rel="stylesheet" href="deck.css?v=4">
+<link rel="stylesheet" href="deck.css?v=5">
 </head>
 <body>
 <canvas id="lens-bg" aria-hidden="true"></canvas>
@@ -623,13 +623,77 @@ Next:    1. <span class="k">mycelium await</span>
   <section class="slide" data-title="05 · Accord and Concord" data-lens="960 780 330">
     <h2 class="rise" style="margin-top:34px">Accord and Concord</h2>
     <div class="cards" style="grid-template-columns: repeat(2, 1fr); max-width: 1500px">
-      <article class="card pane rise"><span class="glyph"></span><h3>Accord</h3><p>Get on the same page before work starts: what the task is, what's out of scope, what done means.</p><span class="foot">one shared summary, locked</span></article>
-      <article class="card pane rise"><span class="glyph"></span><h3>Concord</h3><p>When they disagree: everyone suggests an option and rates them all. The pick is the option that leaves the least happy member best off.</p><span class="foot">one answer, written down</span></article>
+      <article class="card pane rise"><span class="glyph"></span><h3>Accord</h3><p>Get on the same page before work starts: what the task is, what's out of scope, what done means.</p><span class="foot">one shared summary, saved</span></article>
+      <article class="card pane rise"><span class="glyph"></span><h3>Concord</h3><p>When there are real options: everyone suggests one and rates them all. The pick is the option that leaves the least happy member best off.</p><span class="foot">one decision, saved</span></article>
     </div>
     <aside class="notes">
-      <p>Two L9 protocols, run as flows. Summon the conductor in a task's thread: <code>@conductor accord @a @b: …</code> or <code>@conductor concord @a @b: …</code>.</p>
-      <p>Run one live on the lunch task: concord on where to eat works well.</p>
+      <p>Two L9 protocols, run as flows by the conductor inside a task. Accord is about agreeing on the problem. Concord is about agreeing on an answer. Here's each one in turn.</p>
     </aside>
+  </section>
+
+  <!-- ── 05 · Accord (scene) ── -->
+  <section class="slide layout-scene" data-title="05 · Accord">
+    <canvas class="scene" data-scene="accord"></canvas>
+    <div class="swap rise">
+      <h2 data-at="0">Three pictures of <em>one task</em></h2>
+      <h2 data-at="1">Each writes down <em>its points</em></h2>
+      <h2 data-at="2">Code merges them <em>and flags the gaps</em></h2>
+      <h2 data-at="3">A word used two ways <em>is restated</em></h2>
+      <h2 data-at="4">One summary, <em>saved</em></h2>
+    </div>
+    <i class="step beat"></i><i class="step beat"></i><i class="step beat"></i><i class="step beat"></i>
+    <aside class="notes">
+      <p><b>Now:</b> three agents start on the same task, turning on Apple Pay for everyone. They each have a different picture of it. To two of them, done means merged to main. To QA, done means it works on a real iPhone. Nobody finds out until the end.</p>
+      <p><b>Press:</b> accord starts by having each one write down its points, each under a label: the objective, constraints, what's out of scope, what done means, and the words that matter.</p>
+      <p><b>Press:</b> then code merges them, not a model. Points that say the same thing become one, and keep who said them. The two ideas of done contradict each other, so that's flagged. QA's point that Google Pay is out of scope is kept, marked as only QA's. This is the point to land: a model summarizing would quietly pick a winner. Accord shows you where they really differ.</p>
+      <p><b>Press:</b> "everyone" meant all users to one agent and US users to another, so those two are asked to say what they mean once more. Here they land on the same meaning.</p>
+      <p><b>Press:</b> what comes out is one shared summary, saved to the room's memory, with what's still open at the bottom. Everything that runs on the task afterwards reads it. Run accord again and it updates.</p>
+    </aside>
+  </section>
+
+  <!-- ── 05 · Concord (scene) ── -->
+  <section class="slide layout-scene" data-title="05 · Concord">
+    <canvas class="scene" data-scene="concord"></canvas>
+    <div class="swap rise">
+      <h2 data-at="0">Everyone proposes <em>one option</em></h2>
+      <h2 data-at="1">Everyone rates <em>every option</em></h2>
+      <h2 data-at="2">The least happy member <em>is best off</em></h2>
+      <h2 data-at="3">Below the bar, <em>a fix</em></h2>
+      <h2 data-at="4">One decision, <em>saved</em></h2>
+    </div>
+    <i class="step beat"></i><i class="step beat"></i><i class="step beat"></i><i class="step beat"></i>
+    <aside class="notes">
+      <p><b>Now:</b> the question from the checkout room: when a customer is charged twice, do we refund automatically or send it to support? Usually the most confident agent wins, or a vote leaves one member miserable. In concord, each member proposes one option.</p>
+      <p><b>Press:</b> everyone rates every option from 0 to 100, all at the same time, so nobody sees the others' ratings first.</p>
+      <p><b>Press:</b> code picks, not a model. For each option it looks at the least happy rating, and picks the option where that's highest. Option A, the loudest one, would leave the reviewer at 30. C leaves nobody below 65.</p>
+      <p><b>Press:</b> 65 is still below the bar of 70, so the least happy member, the reviewer, is asked for a fix, and everyone rates it. This happens at most twice.</p>
+      <p><b>Press:</b> the fix clears the bar for everyone, and the decision is saved to the room's memory. If nothing clears it, concord says so honestly: no option works for everyone. The point to land: nobody gets steamrolled.</p>
+    </aside>
+  </section>
+
+  <!-- ── 05 · When to reach for each ── -->
+  <section class="slide" data-title="05 · When to reach for each">
+    <h2 class="rise" style="margin-top:34px">When to reach for <em>each</em></h2>
+    <div class="grid2">
+      <div class="box rise"><h3>Accord</h3><p>When a task changes hands, or several agents start on it at once. Before the work, so they agree on the problem.</p><code>@conductor accord @~builder @~qa: what is this task?</code></div>
+      <div class="box rise"><h3>Concord</h3><p>When there are real options and no one person can just decide. They agree on an answer, and nobody gets steamrolled.</p><code>@conductor concord @~builder @~reviewer: which way?</code></div>
+    </div>
+    <aside class="notes">
+      <p>When to use them matters as much as how they work. Accord is for agreeing on the problem: use it when a task changes hands, or several agents start on it at the same time. Concord is for agreeing on an answer: use it when there are real options and nobody can simply make the call.</p>
+      <p>Either one starts with a message in the task's thread. Write the agents as <code>@~name</code> so the conductor gives them their turns instead of everyone waking at once.</p>
+    </aside>
+  </section>
+
+  <!-- ── 05 · Run one ── -->
+  <section class="slide layout-exercise" data-title="05 · Run one" data-lens="1500 560 300">
+    <h2 class="rise" style="margin-top:34px">Run one on lunch</h2>
+    <ol class="steps">
+      <li class="rise"><span>In your lunch task's thread: <code>@conductor concord @~your-agent @~their-agent: where do we eat?</code></span></li>
+      <li class="rise"><span>Watch the ratings come in, and the pick.</span></li>
+      <li class="rise"><span>Find the decision in the room's memory, under <code>context/decision/</code>.</span></li>
+    </ol>
+    <div class="timer rise" data-minutes="10" style="--x:1500px; --y:560px" role="timer" aria-label="Exercise timer"></div>
+    <aside class="notes"><p>Use the lunch task from before. Put your own handle in as well if you want a turn yourself: you rate in the thread like the agents do. If there's time, run accord on the same task and compare the two. Click the timer to start it.</p></aside>
   </section>
 
   <!-- ── 06 · Multiplayer ── -->
