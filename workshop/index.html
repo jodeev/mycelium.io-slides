@@ -619,6 +619,17 @@ Next:    1. <span class="k">mycelium await</span>
     </aside>
   </section>
 
+  <!-- ── 05 · Another company's agent ── -->
+  <section class="slide layout-statement" data-title="05 · Another company's agent" data-lens="1680 840 190, 1440 970 38">
+    <blockquote class="rise">Now one of the agents <em>isn't yours.</em></blockquote>
+    <cite class="long rise">@provider is the payment provider's agent. It has its own rate limit and certification window, and nobody in the room can overrule it.</cite>
+    <aside class="notes">
+      <p>In a room of your own agents, you break every tie, and fast. You'd never need a protocol for that. These flows earn their keep when nobody in the room can just decide.</p>
+      <p>So put one agent from another company in the room: the payment provider's agent. It has a rate limit, it only lets changes go live in its certification window, Tuesday to Thursday, and a new integration has to be re-certified. You can't overrule it, and its limits aren't up for negotiation.</p>
+      <p>This isn't a story. Earlier this week an agent running on another company's machine joined one of our rooms with a join code, the same one Add member hands out.</p>
+    </aside>
+  </section>
+
   <!-- ── 05 · Accord and Concord ── -->
   <section class="slide" data-title="05 · Accord and Concord" data-lens="960 780 330">
     <h2 class="rise" style="margin-top:34px">Accord and Concord</h2>
@@ -635,7 +646,7 @@ Next:    1. <span class="k">mycelium await</span>
   <section class="slide layout-scene" data-title="05 · Accord">
     <canvas class="scene" data-scene="accord"></canvas>
     <div class="swap rise">
-      <h2 data-at="0">Three pictures of <em>one task</em></h2>
+      <h2 data-at="0">Two pictures of <em>one launch</em></h2>
       <h2 data-at="1">Each writes down <em>its points</em></h2>
       <h2 data-at="2">Code merges them <em>and flags the gaps</em></h2>
       <h2 data-at="3">A word used two ways <em>is restated</em></h2>
@@ -643,11 +654,11 @@ Next:    1. <span class="k">mycelium await</span>
     </div>
     <i class="step beat"></i><i class="step beat"></i><i class="step beat"></i><i class="step beat"></i>
     <aside class="notes">
-      <p><b>Now:</b> three agents start on the same task, turning on Apple Pay for everyone. They each have a different picture of it. To two of them, done means merged to main. To QA, done means it works on a real iPhone. Nobody finds out until the end.</p>
-      <p><b>Press:</b> accord starts by having each one write down its points, each under a label: the objective, constraints, what's out of scope, what done means, and the words that matter.</p>
-      <p><b>Press:</b> then code merges them, not a model. Points that say the same thing become one, and keep who said them. The two ideas of done contradict each other, so that's flagged. QA's point that Google Pay is out of scope is kept, marked as only QA's. This is the point to land: a model summarizing would quietly pick a winner. Accord shows you where they really differ.</p>
-      <p><b>Press:</b> "everyone" meant all users to one agent and US users to another, so those two are asked to say what they mean once more. Here they land on the same meaning.</p>
-      <p><b>Press:</b> what comes out is one shared summary, saved to the room's memory, with what's still open at the bottom. Everything that runs on the task afterwards reads it. Run accord again and it updates.</p>
+      <p><b>Now:</b> our two agents and the provider's agent start on the same task, turning on Apple Pay for everyone. Our builder plans to merge and go live on Friday. The provider only lets changes go live Tuesday to Thursday. Without anything else, we'd find that out at launch.</p>
+      <p><b>Press:</b> accord starts by having each one write down its points, each under a label: the objective, constraints, what done means, and the words that matter. The provider brings points nobody on our side knew: its window, re-certifying a new integration, and a rate limit of 100 test payments a minute.</p>
+      <p><b>Press:</b> then code merges them, not a model. Points that say the same thing become one, and keep who said them. Friday and the Tuesday-to-Thursday window contradict each other, so that's flagged. The re-certification and the rate limit are kept, marked as only the provider's. This is the point to land: a model summarizing would quietly drop the other company's limits, and our load test would blow through them. Accord keeps them in front of everyone.</p>
+      <p><b>Press:</b> "live" meant deployed to us and certified and taking real cards to the provider, so those two are asked to say what they mean once more. Here they land on the provider's meaning.</p>
+      <p><b>Press:</b> what comes out is one shared summary, saved to the room's memory, with what's still open at the bottom: Friday or the window. Everything that runs on the task afterwards reads it. Run accord again and it updates.</p>
     </aside>
   </section>
 
@@ -655,19 +666,19 @@ Next:    1. <span class="k">mycelium await</span>
   <section class="slide layout-scene" data-title="05 · Concord">
     <canvas class="scene" data-scene="concord"></canvas>
     <div class="swap rise">
-      <h2 data-at="0">Everyone proposes <em>one option</em></h2>
-      <h2 data-at="1">Everyone rates <em>every option</em></h2>
+      <h2 data-at="0">Everyone proposes <em>one plan</em></h2>
+      <h2 data-at="1">Everyone rates <em>every plan</em></h2>
       <h2 data-at="2">The least happy member <em>is best off</em></h2>
       <h2 data-at="3">Below the bar, <em>a fix</em></h2>
       <h2 data-at="4">One decision, <em>saved</em></h2>
     </div>
     <i class="step beat"></i><i class="step beat"></i><i class="step beat"></i><i class="step beat"></i>
     <aside class="notes">
-      <p><b>Now:</b> the question from the checkout room: when a customer is charged twice, do we refund automatically or send it to support? Usually the most confident agent wins, or a vote leaves one member miserable. In concord, each member proposes one option.</p>
-      <p><b>Press:</b> everyone rates every option from 0 to 100, all at the same time, so nobody sees the others' ratings first.</p>
-      <p><b>Press:</b> code picks, not a model. For each option it looks at the least happy rating, and picks the option where that's highest. Option A, the loudest one, would leave the reviewer at 30. C leaves nobody below 65.</p>
-      <p><b>Press:</b> 65 is still below the bar of 70, so the least happy member, the reviewer, is asked for a fix, and everyone rates it. This happens at most twice.</p>
-      <p><b>Press:</b> the fix clears the bar for everyone, and the decision is saved to the room's memory. If nothing clears it, concord says so honestly: no option works for everyone. The point to land: nobody gets steamrolled.</p>
+      <p><b>Now:</b> the question accord left open: when does it go live? There's no boss here. Our agents can't overrule the provider, and the provider can't overrule us. Each member proposes one plan: ship Friday, ship in the provider's window on Tuesday, or ship behind a flag now and certify later.</p>
+      <p><b>Press:</b> everyone rates every plan from 0 to 100, all at the same time, so nobody sees the others' ratings first.</p>
+      <p><b>Press:</b> code picks, not a model. For each plan it looks at the least happy rating, and picks the plan where that's highest. Friday has the most votes, both of ours, and the provider rates it 0, so it can't win. The flag plan leaves the provider at 30. Tuesday leaves nobody below 45.</p>
+      <p><b>Press:</b> 45 is still below the bar of 70, so the least happy member, our builder, is asked for a fix: merge the flag now, so Tuesday is just flipping it. Everyone rates the fix. This happens at most twice.</p>
+      <p><b>Press:</b> the fix clears the bar for everyone, and the decision is saved to the room's memory. If nothing clears it, concord says so honestly: no plan works for everyone. The point to land: with nobody in charge, nobody gets steamrolled, including the company that isn't you.</p>
     </aside>
   </section>
 
@@ -675,11 +686,11 @@ Next:    1. <span class="k">mycelium await</span>
   <section class="slide" data-title="05 · When to reach for each">
     <h2 class="rise" style="margin-top:34px">When to reach for <em>each</em></h2>
     <div class="grid2">
-      <div class="box rise"><h3>Accord</h3><p>When a task changes hands, or several agents start on it at once. Before the work, so they agree on the problem.</p><code>@conductor accord @~builder @~qa: what is this task?</code></div>
-      <div class="box rise"><h3>Concord</h3><p>When there are real options and no one person can just decide. They agree on an answer, and nobody gets steamrolled.</p><code>@conductor concord @~builder @~reviewer: which way?</code></div>
+      <div class="box rise"><h3>Accord</h3><p>When agents from different teams or companies start on one task. Before the work, so everyone's rules are in the summary.</p><code>@conductor accord @~builder @~provider: what is this launch?</code></div>
+      <div class="box rise"><h3>Concord</h3><p>When there are real options and nobody in the room can just decide. They agree on an answer, and nobody gets steamrolled.</p><code>@conductor concord @~builder @~provider: when do we ship?</code></div>
     </div>
     <aside class="notes">
-      <p>When to use them matters as much as how they work. Accord is for agreeing on the problem: use it when a task changes hands, or several agents start on it at the same time. Concord is for agreeing on an answer: use it when there are real options and nobody can simply make the call.</p>
+      <p>When to use them matters as much as how they work. In your own room, you'll rarely need either: you can just decide. Accord is for agreeing on the problem when the agents don't share one boss, so the other side's rules are known before the work. Concord is for agreeing on an answer when there are real options and nobody can simply make the call.</p>
       <p>Either one starts with a message in the task's thread. Write the agents as <code>@~name</code> so the conductor gives them their turns instead of everyone waking at once.</p>
     </aside>
   </section>
@@ -688,12 +699,12 @@ Next:    1. <span class="k">mycelium await</span>
   <section class="slide layout-exercise" data-title="05 · Run one" data-lens="1500 560 300">
     <h2 class="rise" style="margin-top:34px">Run one on lunch</h2>
     <ol class="steps">
-      <li class="rise"><span>In your lunch task's thread: <code>@conductor concord @~your-agent @~their-agent: where do we eat?</code></span></li>
+      <li class="rise"><span>In your lunch task's thread: <code>@conductor concord @~agent-one @~agent-two: where do we eat?</code></span></li>
       <li class="rise"><span>Watch the ratings come in, and the pick.</span></li>
       <li class="rise"><span>Find the decision in the room's memory, under <code>context/decision/</code>.</span></li>
     </ol>
     <div class="timer rise" data-minutes="10" style="--x:1500px; --y:560px" role="timer" aria-label="Exercise timer"></div>
-    <aside class="notes"><p>Use the lunch task from before. Put your own handle in as well if you want a turn yourself: you rate in the thread like the agents do. If there's time, run accord on the same task and compare the two. Click the timer to start it.</p></aside>
+    <aside class="notes"><p>Use the lunch task from before, with two of your agents. Put your own handle in as well if you want a turn yourself: you rate in the thread like the agents do. Lunch is low stakes on purpose, so you can see how it runs. In the next part you'll share a room with your neighbor: run it again there with their agent, which you can't overrule. That's the case it's for. Click the timer to start it.</p></aside>
   </section>
 
   <!-- ── 06 · Multiplayer ── -->

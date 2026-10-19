@@ -643,36 +643,64 @@
     d.label(text, x - 36, (y0 + y1) / 2, a, color, 19, 'right');
   }
 
-  // ── Accord: one shared picture of the task ──
-  // The demo's checkout room: three agents start "Apple Pay for everyone".
-  // Stage 0: each has its own idea of what done means. Stage 1: each writes
-  // its points, each under a label. Stage 2: code merges them into one
-  // summary; points that say the same thing combine and keep who said them,
-  // a contradiction is lit red, a point only one agent made stays, dashed,
-  // and a word used two ways is lit. Stage 3: the two who used the word
-  // differently restate it, and it merges. Stage 4: the summary is saved to
-  // memory with what's still open, and later work in the task reads it.
+  // A card's width, to lay cards out in a row before they are drawn.
+  function cardWidth(ctx, kind, text) {
+    ctx.save(); ctx.font = MONO; const kw = kind ? ctx.measureText(kind).width + 16 : 0;
+    ctx.font = SANS; const w = 44 + kw + ctx.measureText(text).width; ctx.restore();
+    return w;
+  }
+  // The agent from another company: its bead wears a dashed ring.
+  function outsider(d, x, y, r, a) {
+    if (a < 0.01) return;
+    const ctx = d.ctx;
+    ctx.save(); ctx.globalAlpha = a * 0.8; ctx.strokeStyle = C.violet; ctx.lineWidth = 2; ctx.setLineDash([6, 6]);
+    ctx.beginPath(); ctx.arc(x, y, r + 12, 0, 6.2832); ctx.stroke(); ctx.restore();
+  }
+
+  // ── Accord: one shared picture of the task, with another company in it ──
+  // The demo's checkout room: @builder and @qa start "Apple Pay for
+  // everyone" with @provider, the payment provider's agent, which belongs to
+  // another company and has rules of its own. Stage 0: each has its own
+  // picture: ours ships Friday, theirs only goes live Tuesday to Thursday.
+  // Stage 1: each writes its points, each under a label. Stage 2: code
+  // merges them into one summary; points that say the same thing combine
+  // and keep who said them, the contradiction is lit red, the points only
+  // @provider made stay, dashed, and a word used two ways is lit. Stage 3:
+  // the two who used "live" differently restate it, and it merges. Stage 4:
+  // the summary is saved with what's still open, and later work reads it.
   defs.accord = () => {
     const rnd = seeded(73);
-    const COLORS = ['accent', 'violet', 'green'];
-    const agents = [['@builder', 410], ['@reviewer', 630], ['@qa', 850]]
+    const COLORS = ['accent', 'green', 'violet'];
+    const agents = [['@builder', 410], ['@qa', 630], ['@provider', 850]]
       .map(([name, y], i) => Object.assign(node(230, y, 30, 1), { name, color: COLORS[i] }));
     const OBJ = 'Apple Pay at checkout', SW = 'Behind a switch first';
-    const TERM = ['everyone: all users', 'everyone: all users', 'everyone: US users'];
-    const RESTATED = 'everyone: all users in the US';
-    // [who, label, text, its row in the summary]
+    const TERM = ['live: deployed', null, 'live: certified, real cards'];
+    const RESTATED = 'live: certified and taking real cards';
+    // [who, label, text, its row in the summary, shown on the first stage]
     const pts = [
-      [0, 'objective', OBJ, 0], [0, 'constraint', SW, 1], [0, 'done', 'Merged to main', 2], [0, 'term', TERM[0], 5],
-      [1, 'objective', OBJ, 0], [1, 'constraint', SW, 1], [1, 'done', 'Merged to main', 2],
-      [2, 'objective', OBJ, 0], [2, 'done', 'Works on a real iPhone', 3], [2, 'out of scope', 'Google Pay', 4], [2, 'term', TERM[2], 6],
-    ].map(([who, kind, text, row]) => Object.assign(node(320, agents[who].y), { who, kind, text, row }));
-    pts.forEach(p => { p.k = pts.filter(q => q.who === p.who).indexOf(p); });
-    const PANEL = { x: 1000, y: 290, w: 760, h: 620 };
-    const rowY = r => PANEL.y + 64 + r * 84;
-    const rowOf = (p, s) => (p.kind === 'term' && s >= 3 ? 5 : p.row);
-    // Before the merge: each agent's points in two rows beside it; on the
-    // first stage only its idea of done, level with it.
-    const home = (p, s) => (s === 0 ? { x: 320, y: agents[p.who].y } : { x: 320 + (p.k % 2) * 470, y: agents[p.who].y + (p.k < 2 ? -36 : 36) });
+      [0, 'objective', OBJ, 0], [0, 'constraint', SW, 1], [0, 'done', 'Merged and live Friday', 2, true], [0, 'term', TERM[0], 6],
+      [1, 'objective', OBJ, 0], [1, 'constraint', SW, 1],
+      [2, 'objective', OBJ, 0], [2, 'constraint', 'Live only Tue–Thu', 3, true], [2, 'constraint', 'Re-certify new integrations', 4],
+      [2, 'constraint', '100 test payments a minute', 5], [2, 'term', TERM[2], 7],
+    ].map(([who, kind, text, row, first]) => Object.assign(node(320, agents[who].y), { who, kind, text, row, first: !!first }));
+    const PANEL = { x: 1000, y: 304, w: 760, h: 612 };
+    const rowY = r => PANEL.y + 52 + r * 72;
+    const rowOf = (p, s) => (p.kind === 'term' && s >= 3 ? 6 : p.row);
+    // Before the merge: each agent's points flow in two lines beside it; on
+    // the first stage only its main point, level with it.
+    let laid = false;
+    const layout = ctx => {
+      [0, 1, 2].forEach(who => {
+        let x = 320, line = 0;
+        pts.filter(p => p.who === who).forEach(p => {
+          const w = cardWidth(ctx, p.kind, p.text);
+          if (x + w > 1800) { x = 320; line++; }
+          p.hx = x; p.hy = agents[who].y + (line === 0 ? -36 : 36); x += w + 22;
+        });
+      });
+      laid = true;
+    };
+    const home = (p, s) => (s === 0 ? { x: 320, y: agents[p.who].y } : { x: p.hx, y: p.hy });
     const worker = Object.assign(node(560, 640, 0, 0), { name: 'later work' });
     const vis = { panel: 0, flags: 0, terms: 0, saved: 0 };
     let pulses = [], clock = 0;
@@ -682,6 +710,7 @@
         pts.forEach(p => { if (p.kind === 'term') p.text = s >= 3 ? RESTATED : TERM[p.who]; });
       },
       frame(d, dt, s) {
+        if (!laid) layout(d.ctx);
         clock += dt;
         ease(vis, 'panel', s >= 2 ? 1 : 0, 4, dt);
         ease(vis, 'flags', s >= 2 ? 1 : 0, 3, dt);
@@ -695,7 +724,7 @@
           // In the summary a point several agents made is one card: the
           // copies after the first fade once they land on it.
           const first = pts.find(q => rowOf(q, s) === row) === p;
-          p.ta = s === 0 ? (p.kind === 'done' ? 1 : 0) : s >= 2 && !first && dist(p, t) < 8 ? 0 : 1;
+          p.ta = s === 0 ? (p.first ? 1 : 0) : s >= 2 && !first && dist(p, t) < 8 ? 0 : 1;
           settle(p, dt, 3.2);
         });
         worker.tr = s >= 4 ? 30 : 0; worker.ta = s >= 4 ? 1 : 0; settle(worker, dt);
@@ -721,10 +750,10 @@
 
         // The flags: never resolved, only shown.
         bracket(d, PANEL.x + 16, rowY(2), rowY(3), 'contradicts', C.red, vis.flags);
-        d.label('only @qa said this', PANEL.x + 384, rowY(4), vis.flags, C.yellow, 18, 'left');
-        bracket(d, PANEL.x + 16, rowY(5), rowY(6), 'used two ways', C.yellow, vis.terms);
-        d.label('restated', PANEL.x + 520, rowY(5), s === 3 ? Math.min(1, clock) : 0, C.green, 18, 'left');
-        d.label('still open: what done means · Google Pay', PANEL.x, PANEL.y + PANEL.h + 40, vis.saved, C.muted, 19, 'left');
+        bracket(d, PANEL.x + 16, rowY(4), rowY(5), 'only @provider', C.yellow, vis.flags);
+        bracket(d, PANEL.x + 16, rowY(6), rowY(7), 'used two ways', C.yellow, vis.terms);
+        d.label('restated', PANEL.x + 590, rowY(6), s === 3 ? Math.min(1, clock) : 0, C.green, 18, 'left');
+        d.label('still open: Friday, or Tuesday to Thursday', PANEL.x, PANEL.y + PANEL.h + 40, vis.saved, C.muted, 19, 'left');
 
         // Later work in the task reads the summary.
         if (s >= 4 && clock > 1) {
@@ -736,13 +765,15 @@
 
         pts.forEach(p => {
           const row = rowOf(p, s), inPanel = s >= 2;
-          const o = !inPanel ? {} : row === 2 || row === 3 ? { stroke: C.red } : row === 4 ? { stroke: C.yellow, dash: true } : (row === 5 || row === 6) && s === 2 ? { stroke: C.yellow } : {};
+          const o = !inPanel ? {} : row === 2 || row === 3 ? { stroke: C.red } : row === 4 || row === 5 ? { stroke: C.yellow, dash: true } : (row === 6 || row === 7) && s === 2 ? { stroke: C.yellow } : {};
           card(d, p.x, p.y, p.kind, p.text, p.a, o);
         });
-        agents.forEach(n => {
+        agents.forEach((n, i) => {
+          if (i === 2) outsider(d, n.x, n.y, n.r, n.a);
           d.bead(n.x, n.y, n.r, C[n.color], n.a);
-          d.label(n.name, n.x, n.y + 58, n.a, C.muted, 18);
+          d.label(n.name, n.x, n.y + 62, n.a, C.muted, 18);
         });
+        d.label('another company', agents[2].x, agents[2].y + 90, agents[2].a * 0.8, C.violet, 15);
         d.bead(worker.x, worker.y, worker.r * (1 + worker.flash * 0.2), C.accent, worker.a);
         d.label('later work in the task', worker.x, worker.y + 60, worker.a, C.accent, 18);
         worker.flash = Math.max(0, worker.flash - dt * 2.5);
@@ -750,25 +781,26 @@
     };
   };
 
-  // ── Concord: one option nobody is steamrolled by ──
-  // The demo's checkout question: refund double charges automatically, or
-  // send them to support? Stage 0: each member proposes one option. Stage 1:
-  // everyone rates every option at once. Stage 2: each option's least happy
-  // rating is lit, and the pick is the option whose least happy member is
-  // best off (not the loudest one, which leaves @reviewer at 30). Stage 3:
-  // the pick is below the bar, so its least happy member proposes a fix,
-  // which everyone rates. Stage 4: the fix clears the bar and is saved.
+  // ── Concord: one plan nobody is steamrolled by ──
+  // The same task: when does Apple Pay go live? @provider belongs to
+  // another company, so nobody in the room can overrule it. Stage 0: each
+  // member proposes one plan. Stage 1: everyone rates every plan at once.
+  // Stage 2: each plan's least happy rating is lit, and the pick is the plan
+  // whose least happy member is best off. Friday has the most votes, and
+  // @provider rates it 0, so it can't win. Stage 3: the pick is below the
+  // bar, so its least happy member, @builder, proposes a fix, which everyone
+  // rates. Stage 4: the fix clears the bar and is saved.
   defs.concord = () => {
-    const MEMBERS = [['@builder', 'accent'], ['@reviewer', 'green'], ['you', 'violet']];
+    const MEMBERS = [['@builder', 'accent'], ['@qa', 'green'], ['@provider', 'violet']];
     const COLX = [1110, 1290, 1470], MINX = 1640, BAR = 70, X0 = 250, X1 = 1730;
     const rows = [
-      { letter: 'A', text: 'Refund automatically', by: 0, r: [90, 30, 60] },
-      { letter: 'B', text: 'Send to support first', by: 1, r: [40, 85, 55] },
-      { letter: 'C', text: 'Under $50 refund, the rest to support', by: 2, r: [75, 65, 80] },
-      { letter: 'C′', text: 'C, and support checks each refund', by: 1, r: [78, 74, 82], fix: true },
+      { letter: 'A', text: 'Ship Friday', by: 0, r: [95, 80, 0] },
+      { letter: 'B', text: 'Ship in the window, Tuesday', by: 2, r: [45, 70, 90] },
+      { letter: 'C', text: 'Behind a flag now, certify later', by: 1, r: [85, 75, 30] },
+      { letter: 'B′', text: 'B, with the flag merged now', by: 0, r: [80, 82, 88], fix: true },
     ].map(o => ({ ...o, a: 0, shown: [0, 0, 0], low: 0, lit: 0, min: Math.min(...o.r) }));
     const rowY = i => 410 + i * 104;
-    const PICK = 2, FIX = 3;
+    const PICK = 1, FIX = 3;
     let clock = 0;
     return {
       stage() { clock = 0; },
@@ -777,6 +809,7 @@
         const ctx = d.ctx;
         // The header: who rates, and each option's least happy rating.
         MEMBERS.forEach(([name, color], j) => {
+          if (j === 2) outsider(d, COLX[j], 300, 14, 1);
           d.bead(COLX[j], 300, 14, C[color], 1);
           d.label(name, COLX[j], 340, 1, C.muted, 18);
         });
@@ -788,6 +821,7 @@
           // Proposals land one after another; ratings all at once.
           o.a = approach(o.a, here && (o.fix || clock > i * 0.5 || s > 0) ? (s === 4 && !o.fix ? 0.35 : 1) : 0, 5, dt);
           const rated = o.fix ? s >= 3 && clock > 1.2 : s >= 1;
+          o.rated = rated;
           o.r.forEach((v, j) => { o.shown[j] = approach(o.shown[j], rated ? v : 0, 3, dt); });
           ease(o, 'low', (o.fix ? s >= 3 && clock > 2.2 : s >= 2) ? 1 : 0, 4, dt);
           ease(o, 'lit', (s === 2 && i === PICK) || (s >= 3 && o.fix && clock > 2.2) ? 1 : 0, 4, dt);
@@ -806,7 +840,7 @@
             const isMin = v === o.min;
             const ring = o.lit > 0.5 ? C.accent : i === 0 && s === 2 ? C.red : i === PICK && s >= 3 ? C.yellow : C.muted;
             if (isMin) d.ring(COLX[j], y, 32, ring, o.a * o.low * 0.9, 2.5);
-            if (o.shown[j] > 0.5) d.label(String(Math.round(o.shown[j])), COLX[j], y, o.a, C.text, 26);
+            if (o.rated) d.label(String(Math.round(o.shown[j])), COLX[j], y, o.a, C.text, 26);
           });
           // The least happy rating, against the bar once there is one.
           const col = s >= 3 && (i === PICK || o.fix) ? (o.min >= BAR ? C.green : C.yellow) : o.lit > 0.5 ? C.accent : C.text;
@@ -815,10 +849,10 @@
 
         // What each stage leaves you with, under the table.
         const below = rowY(FIX) + 110;
-        d.label('The loudest option, A, would leave @reviewer at 30.', X0, below, s === 2 ? 1 : 0, C.red, 21, 'left');
-        d.label('C is below the bar for @reviewer, so @reviewer proposes a fix and everyone rates it.', X0, below, s === 3 ? 1 : 0, C.yellow, 21, 'left');
-        d.label('Saved to context/decision/double-charges.', X0, below, s === 4 ? 1 : 0, C.accent, 21, 'left');
-        d.label('If nothing clears the bar, it says so: no option works for everyone.', X0, below + 44, s === 4 ? 0.8 : 0, C.muted, 19, 'left');
+        d.label('Friday has the most votes, and @provider rates it 0. Nobody here can overrule @provider.', X0, below, s === 2 ? 1 : 0, C.red, 21, 'left');
+        d.label('B is below the bar for @builder, so @builder proposes a fix and everyone rates it.', X0, below, s === 3 ? 1 : 0, C.yellow, 21, 'left');
+        d.label('Saved to context/decision/apple-pay-for-everyone.', X0, below, s === 4 ? 1 : 0, C.accent, 21, 'left');
+        d.label('If nothing clears the bar, it says so: no plan works for everyone.', X0, below + 44, s === 4 ? 0.8 : 0, C.muted, 19, 'left');
       },
     };
   };
