@@ -786,7 +786,7 @@
   // another company, so nobody in the room can overrule it. Stage 0: each
   // member proposes one plan. Stage 1: everyone rates every plan at once.
   // Stage 2: each plan's least happy rating is lit, and the pick is the plan
-  // whose least happy member is best off. Friday has the most votes, and
+  // whose least happy member is best off. Friday has the highest total, and
   // @provider rates it 0, so it can't win. Stage 3: the pick is below the
   // bar, so its least happy member, @builder, proposes a fix, which everyone
   // rates. Stage 4: the fix clears the bar and is saved.
@@ -849,7 +849,7 @@
 
         // What each stage leaves you with, under the table.
         const below = rowY(FIX) + 110;
-        d.label('Friday has the most votes, and @provider rates it 0. Nobody here can overrule @provider.', X0, below, s === 2 ? 1 : 0, C.red, 21, 'left');
+        d.label('Friday has the highest total, and @provider rates it 0. Nobody here can overrule @provider.', X0, below, s === 2 ? 1 : 0, C.red, 21, 'left');
         d.label('B is below the bar for @builder, so @builder proposes a fix and everyone rates it.', X0, below, s === 3 ? 1 : 0, C.yellow, 21, 'left');
         d.label('Saved to context/decision/apple-pay-for-everyone.', X0, below, s === 4 ? 1 : 0, C.accent, 21, 'left');
         d.label('If nothing clears the bar, it says so: no plan works for everyone.', X0, below + 44, s === 4 ? 0.8 : 0, C.muted, 19, 'left');

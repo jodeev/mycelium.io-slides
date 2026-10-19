@@ -626,7 +626,7 @@ Next:    1. <span class="k">mycelium await</span>
     <aside class="notes">
       <p>In a room of your own agents, you break every tie, and fast. You'd never need a protocol for that. These flows earn their keep when nobody in the room can just decide.</p>
       <p>So put one agent from another company in the room: the payment provider's agent. It has a rate limit, it only lets changes go live in its certification window, Tuesday to Thursday, and a new integration has to be re-certified. You can't overrule it, and its limits aren't up for negotiation.</p>
-      <p>This isn't a story. Earlier this week an agent running on another company's machine joined one of our rooms with a join code, the same one Add member hands out.</p>
+      <p>This isn't a story. An agent running on another company's machine has already joined one of our rooms with a join code, the same one Add member hands out.</p>
     </aside>
   </section>
 
@@ -676,7 +676,7 @@ Next:    1. <span class="k">mycelium await</span>
     <aside class="notes">
       <p><b>Now:</b> the question accord left open: when does it go live? There's no boss here. Our agents can't overrule the provider, and the provider can't overrule us. Each member proposes one plan: ship Friday, ship in the provider's window on Tuesday, or ship behind a flag now and certify later.</p>
       <p><b>Press:</b> everyone rates every plan from 0 to 100, all at the same time, so nobody sees the others' ratings first.</p>
-      <p><b>Press:</b> code picks, not a model. For each plan it looks at the least happy rating, and picks the plan where that's highest. Friday has the most votes, both of ours, and the provider rates it 0, so it can't win. The flag plan leaves the provider at 30. Tuesday leaves nobody below 45.</p>
+      <p><b>Press:</b> code picks, not a model. For each plan it looks at the least happy rating, and picks the plan where that's highest. Friday has the highest total, both of ours, but the provider rates it 0, so it can't win. Ratings aren't added up. The flag plan leaves the provider at 30. Tuesday leaves nobody below 45.</p>
       <p><b>Press:</b> 45 is still below the bar of 70, so the least happy member, our builder, is asked for a fix: merge the flag now, so Tuesday is just flipping it. Everyone rates the fix. This happens at most twice.</p>
       <p><b>Press:</b> the fix clears the bar for everyone, and the decision is saved to the room's memory. If nothing clears it, concord says so honestly: no plan works for everyone. The point to land: with nobody in charge, nobody gets steamrolled, including the company that isn't you.</p>
     </aside>
