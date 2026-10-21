@@ -18,6 +18,11 @@
   .grid2.when { grid-auto-rows: 1fr; }
   .grid2.when .box { min-height: 238px; padding: 36px 40px; gap: 12px; justify-content: center; }
 
+  .bk { margin: 34px 0 24px; gap: 24px; }
+  .bk .box { min-height: 0; padding: 34px 44px; }
+  .bk ul { margin: 14px 0 0; padding-left: 28px; font-size: 30px; line-height: 1.5; color: var(--muted); }
+  .bk li { margin-bottom: 8px; } .bk b { color: var(--accent); font-weight: 600; }
+
   /* Video and recap slides */
   .vid { margin: 30px auto 0; text-align: center; }
   .vid video { width: 1400px; max-width: 100%; max-height: 800px; border-radius: 12px; background: #000; }
@@ -359,6 +364,36 @@
       <a class="pane" href="https://github.com/mycelium-io/mycelium"><span>code</span> github.com/mycelium-io/mycelium</a>
     </div>
     <aside class="notes"><p>Leave up during Q&A.</p></aside>
+  </section>
+
+  <!-- Backup: how Accord and Concord tested (from AccordConcord_19Oct2026) -->
+  <section class="slide" data-title="Backup: how Accord and Concord tested">
+    <div class="kicker rise">Backup</div>
+    <h2 class="rise" style="margin-top:8px">How Accord and Concord <em>tested</em></h2>
+    <div class="grid2 bk" style="grid-template-columns: repeat(2, 1fr)">
+      <div class="box rise"><h3>Accord</h3>
+        <ul>
+          <li><b>83%</b> of runs lock a contract</li>
+          <li><b>99.5%</b> of locked terms used afterwards</li>
+          <li><b>81%</b> glossary uptake, <b>61%</b> visibly shape reasoning</li>
+          <li><b>379K</b> prompt tokens per run, 85% cache eligible</li>
+        </ul></div>
+      <div class="box rise"><h3>Concord</h3>
+        <ul>
+          <li><b>89%</b> of runs reach a decision</li>
+          <li><b>98%</b> of outcomes satisfactory, <b>93%</b> fair</li>
+          <li><b>0.86</b> average worst-off satisfaction, 0 to 3 repairs</li>
+          <li><b>876K</b> tokens per run, 87% cache eligible</li>
+        </ul></div>
+    </div>
+    <p class="flat-caption rise">SRE triage results from the L9 research. <em>Mycelium runs simplified versions.</em></p>
+    <aside class="notes">
+      <p>BACKUP. Source: AccordConcord_19Oct2026.pptx (Shift.forward(), Oct 27, 2026), slide 4, "L9 protocols". These are results on SRE triage for the full L9 protocols from the Internet of Cognition team.</p>
+      <p><b>Accord:</b> locks a contract in 83% of runs. 99.5% of the locked terms are used afterwards. 81% of the glossary is taken up by agents and 61% visibly shapes their reasoning. 379K prompt tokens per run, 85% cache eligible.</p>
+      <p><b>Concord:</b> reaches a decision in 89% of runs. 98% of outcomes are satisfactory and 93% fair. The worst-off agent averages 0.86 satisfaction, with 0 to 3 repairs. 876K tokens per run, 87% cache eligible. The source deck puts this at about 44 cents a run.</p>
+      <p><b>Caveat to say out loud:</b> Mycelium's Accord and Concord are simplified versions of these protocols, so these numbers don't transfer directly. For example, the L9 deck describes a locked Intent Contract, while Mycelium saves a shared summary that can be rerun and updated. The source deck also says both always converge and cost is known up front, which are claims about the full protocols.</p>
+      <p>Mycelium's own small test (five runs each, September 2026, per the L9 integration page): aligner and Concord reached agreement 5 of 5. Concord's median was 60 seconds against the aligner's 156. Concord's agreements landed right at the bar of 70.</p>
+    </aside>
   </section>
 </main>
 
