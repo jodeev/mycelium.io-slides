@@ -871,7 +871,7 @@
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     live.forEach(s => {
       if (!s.slide.classList.contains('active')) return;
-      const stage = (+s.slide.dataset.startStage || 0) + s.slide.querySelectorAll('.step.shown').length; // data-start-stage: a slide that opens partway through a scene
+      const stage = (+s.slide.dataset.startStage || 0) + s.slide.querySelectorAll('.step.shown').length; // data-start-stage: a slide that shows one stage of a scene
       if (stage !== s.stage) { s.slide.dataset.stage = stage; if (s.scene.stage) s.scene.stage(stage, s.stage); s.stage = stage; }
       // Back the canvas at the pixels it covers on screen, so it stays sharp.
       const r = s.canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2);
