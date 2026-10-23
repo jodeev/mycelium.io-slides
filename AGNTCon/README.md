@@ -1,265 +1,114 @@
 <!-- SPDX-License-Identifier: Apache-2.0 -->
 <!-- Copyright 2026 Mycelium Contributors -->
 
-# The workshop deck, and the slide template
+# Making Swarm Work
 
-Live at <https://mycelium-io.github.io/slides/workshop/>. Copy this folder to
-start a new talk.
+**Coordination Primitives for Decentralized Multi-Agent Systems**
 
-A slide deck in plain HTML, for talks and workshops. It uses the docs' palette
-and type: IBM Plex Sans for headings and text, Cormorant Garamond italic only
-as an accent (one phrase in a heading, marked `<em>`), and Geist Mono.
-Most slides are flat: a plain dark background with diagrams of outlined boxes
-and thin arrows. A slide marked `data-glass` shows the glass instead: a field
-of drifting motes (the docs' spores) with a lens over it, used for the title,
-section openers and the close. On a slide that is also `data-logo`, the lens
-holds the Mycelium mark, seen undistorted in its flat middle.
+Jodee Varney, Outshift by Cisco. AGNTCon + MCPCon NA, October 2026.
+
+A 25-minute talk about swarm, or peer-to-peer, agentic systems, and the tools
+needed to help agent teams actually coordinate and collaborate. It uses
+Mycelium, an open source project from the Outshift team, to show a few of those
+tools: rooms, a shared board and memory, and the Accord and Concord engines.
+
+## Abstract
+
+Swarm architectures matter when coordination itself is the hard problem.
+Central orchestration works well for decomposable tasks with clear authority,
+but it breaks down in open-ended coordination: multi-party negotiation,
+conflicting objectives, partial knowledge, dynamic membership, and cases where
+no single agent has enough context or authority to direct the work.
+
+This session explores what it takes to support peer-to-peer coordination in
+open source agent systems. Using Mycelium, we demo coordination primitives such
+as agent discovery, intent alignment, constraint negotiation, and shared state
+across a collectively evolving task.
+
+Attendees will come away with a clearer understanding of the coordination
+problems that arise in peer collaboration, practical approaches to address
+them, use cases where swarm is the right fit, and the infrastructure needed to
+support swarm patterns.
+
+## What the talk covers
+
+- Why coordination between peer agents is its own problem, and where a single
+  orchestrator stops being enough.
+- What peers need to work together (shared intent, shared context, shared
+  reasoning) and where it breaks.
+- Coordination primitives: our starting point, mapped to what Mycelium has.
+- Two recorded runs of the Accord and Concord engines on a contract renewal.
+- What we don't know yet.
+
+There are 25 slides, plus a backup slide with test results for the full L9
+Accord and Concord protocols. Every slide has speaker notes with timings
+(press S for the speaker view).
 
 ## Presenting
 
-Open `index.html` in Chrome. There is no build step and no server. It needs
-the internet for the fonts. Without a connection the type falls back to Georgia and system fonts.
+The deck is plain HTML with no build step. From the root of this repo:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open <http://localhost:8000/AGNTCon/> in Chrome. It needs the internet for
+fonts, and to stream the two demo videos unless you have saved them (see
+below).
 
 | Key | |
 |---|---|
-| → Space PageDown | next step, then next slide (clickers send these) |
-| ← PageUp | back |
-| O | overview of every slide; click a tile to jump to it |
-| S | speaker view: notes, what comes next, elapsed time, the clock |
+| → Space | next step, then next slide |
+| ← | back |
+| O | overview of every slide |
+| S | speaker view: notes, what comes next, timer |
 | F | fullscreen |
-| T | light / dark (light suits a bright room or a weak projector) |
-| B or . | blackout |
+| T | light / dark |
+| B | blackout |
 | a number, then ⏎ | go to that slide |
-| + − 0 | zoom the live app toward the pointer; 0 goes back to fit |
-| D | draw on the slide; U undoes, C clears it, Esc puts the pen down |
+| D | draw on the slide |
 | ? | the key list |
 
-## Live terminals
+## Printing and PDFs
 
-```bash
-uv run workshop/serve.py --cwd ~/workshop
-```
+Print from Chrome with **Background graphics** on. Each slide prints as one
+16:9 page.
 
-This serves the deck at `http://127.0.0.1:8765/workshop/index.html?token=…`
-and opens it. Each terminal pane is then a real shell: bash with a plain
-prompt, started in `--cwd`, running as you with your environment, so
-`mycelium` there is your own CLI talking to your own hub. `--login` gives
-you your own shell and prompt instead. Each terminal keeps its shell while
-the server runs, and a reload replays what was on it.
+- `AGNTCon/?print` prints the slides only. Wait a few seconds for the orange
+  bar to say "Ready" so the animated slides are drawn, then print.
+- `AGNTCon/?notes` prints each slide at the top of a US Letter page with its
+  speaker notes underneath. The notes include internal comments, so don't send
+  this version to others.
 
-- Each press of → types the pane's next prepared command and runs it, one
-  per press, before the deck moves on. That way the demo goes as rehearsed,
-  with no typos.
-- Click into a terminal to type yourself. The keys go to the shell until you
-  press Esc, which hands them back to the deck (Esc never reaches the shell).
-- The speaker view counts the commands left.
-- Opened as a file, or without the server, every terminal is the static one
-  it was written as.
+## Media
 
-The server listens on 127.0.0.1 only. Terminal requests must carry the
-token from the URL, come to that host by name and, from a browser, from
-that origin, so no other page can type into a shell. It needs Python 3.10+
-and nothing else, on macOS or Linux. xterm.js loads from jsDelivr.
+- `media/mycelium-room.png` is a screenshot of a Mycelium room (slide 11).
+  Redact anything private before committing it.
+- `media/outshift-logo.svg` and `media/logo-1C-goldenrod.svg` (AGNTCY) are used
+  on the "Who I am" slide.
+- The Accord and Concord videos are Julia Valenti's recordings of real runs.
+  The deck plays `media/l9-accord.mp4` and `media/l9-concord.mp4` if they are
+  there, and otherwise streams them from mycelium-io.github.io. They are not
+  committed to this repo, so save them into `media/` to present offline.
+- The icons on the other slides come from the workshop deck's `media/` folder.
 
-To make a pane live, give it a `data-term` id and a script:
+## Credits
 
-```html
-<div class="term pane" data-term="board">
-  <div class="bar"><i></i><i></i><i></i><span>room · passkeys</span></div>
-  <template class="script">
-    mycelium board new "Ship passkey login"
-    mycelium board
-  </template>
-  <pre>…what it shows without the server…</pre>
-</div>
-```
-
-## The live app
-
-An app pane shows the real Mycelium app in a frame:
-
-```html
-<div class="app pane" data-app="/room/workshop" data-zoom="1.1">
-  <div class="bar"><i></i><i></i><i></i><span class="addr">mycelium</span></div>
-  <div class="app-view"><img src="app-room-channel@2x.png" alt=""></div>
-  <template class="script">
-    /room/workshop/graph
-    /metrics
-  </template>
-</div>
-```
-
-- **Finding the app.** The deck looks for it at `?app=` on its own URL
-  (`serve.py --app URL` adds that), else on the Docker stack's port
-  (`127.0.0.1:8080`), else the desktop app's (`127.0.0.1:3717`). Until one
-  answers, the pane shows its screenshot, so the slide works offline and as
-  a file.
-- **Clicking in.** The frame sits under a shield. Click it to use the app,
-  and click anywhere else on the slide to give the keys back to the deck.
-  A frame with focus keeps every key, a clicker's included.
-- **Stepping through pages.** Each → opens the next route in the script,
-  after any terminal commands on the slide. The speaker view counts the
-  pages left.
-- **Zoom while presenting.** Magnify any part of the app on the fly, and
-  keep using it while zoomed. Every zoom glides there, holding still the
-  point you aim at, and holding + down zooms in steadily:
-  - the − and + in the pane's address bar (the percentage goes back to fit)
-  - the + and − keys, which zoom toward the pointer when it is over the app,
-    and 0 to go back to fit
-  - a pinch over the app
-  - drag or scroll to look around while zoomed
-
-  Once you have clicked into the app, its keys and pinch belong to the app,
-  so use the bar's buttons, or click outside first.
-- **Base size.** `data-zoom` sets how large the app is drawn at fit, so the
-  room can read it.
-
-A website works the same way: give `data-app` a full URL and the pane frames
-that page at once, with no local app to find. Add `data-tour` (the ids of the
-page's sections, in order) and the bar gets an **Auto-scroll** button. A page
-that answers the deck's `hello` message with `ready` is told to glide to the
-bottom at `data-tour-speed` px/s (default 110); `mycelium-io.github.io` does
-this in its `site.js`. A page that doesn't is toured by jumping the frame
-between the anchors, `data-tour-ms` apart (default 4500). Clicking into the
-page, the Stop button or leaving the slide ends either.
-
-The app keeps its own theme, whatever the deck's. Present from the app
-`mycelium up` or the desktop app serves: a `next dev` server draws its own
-error badge over the page.
-
-## Drawing
-
-Press D (or pick a tool) to draw over the whole slide, the live app and
-terminals included. A toolbar appears at the bottom with three tools: a
-pen (it follows a stylus's pressure), a highlighter, and laser ink that
-fades a moment after you lift. It has five colours from the palette, and
-Undo, Clear and Done. The deck keys still move between slides while you
-draw. Ink belongs to its slide: it is kept in stage pixels, so it scales
-with the window and is still there when you come back. U or ⌘/Ctrl-Z
-undoes, C clears the slide, and D or Esc puts the pen down. Ink isn't
-printed.
-
-## Scenes: show, don't tell
-
-A scene is a small living diagram drawn in the deck's glass: beads for
-agents and people, hyphae between them, pulses for messages. Put
-`<canvas class="scene" data-scene="name">` on a `layout-scene` slide and
-add one empty `<i class="step beat"></i>` for each stage after the first:
-each press moves the scene on, like any other step, and arriving backwards
-shows its last stage. The slide carries `data-stage`, so a heading can
-change with it:
-
-```html
-<div class="swap">
-  <h2 data-at="0">One agent</h2>
-  <h2 data-at="1">An orchestrator</h2>
-</div>
-```
-
-The scenes, in `scenes.js`:
-
-| | stages |
-|---|---|
-| `coworkers` | one agent making tool calls → an orchestrator handing work to subagents that send summaries up and go → one bad instruction going wrong all the way down → agents that each own a piece of the codebase, keep their context and talk to each other |
-| `lifecycle` | one agent that keeps everything and swells → workers that finish and leave notes in the room's memory → new workers that read the notes first |
-| `threeways` | five agents in one group chat → around a room's board, each message going to its task's row → one task running a flow that gives each agent a turn |
-| `asking` | `@builder` mentions `@reviewer` in a task's thread → `@reviewer` wakes, answers in the thread and goes back to waiting |
-| `scale` | you and one agent → three in parallel → three repeatable chains → a swarm (with `.stages` words as its steps) |
-| `lanes` | everything in one conversation → the chat apart, each task's thread in its own lane |
-| `trust` | a swarm behind frosted glass (`.veil`) with outcomes coming out → the glass clears to show the agent pane |
-
-A new scene is a function in `defs` that returns `frame(draw, dt, stage)`
-(and optionally `stage(next, prev)`), drawing in stage pixels with the
-helpers `bead`, `ring`, `edge`, `pulse` and `label`.
-
-The URL hash is the slide number (`index.html#7`). To make a PDF, print from
-Chrome with background graphics on. Each slide prints as one 1920×1080 page
-with a still lens drawn in CSS.
-
-Beads are flat discs, and messages travel along the hyphae as plain dots, to
-match the flat diagrams.
-
-## Flat diagrams
-
-Lay a diagram's boxes out with HTML and CSS (`.box`, `.box.hi`, `.box.warn`,
-and layouts such as `.stair`, `.rows`, `.funnel`, `.triad`, `.grid2`), name
-the boxes a wire joins with `data-node`, and add an `<svg class="wires">` with
-one `<path data-from="a" data-to="b">` per wire. `flat.js` draws each wire from
-the side of one box that faces the other; `data-route="elbow"` bends it at a
-right angle and `data-axis="h"` or `"v"` picks the direction. A wire can be a
-`.step`. A `.callout[data-part]` beside a terminal pane is placed next to the
-`.part` it names, the same way.
-
-## Photos and media
-
-The "Who we are" slide reads `people/julia.jpg` and `people/jodee.jpg`, the two
-presenters' headshots, published with the deck with their permission. Add a
-photo of a person only once they have said yes: the site is served from this
-public repo. A missing one shows a placeholder naming the file.
-Third-party images (screenshots of posts and announcements, other companies'
-logos, other people's slides) go in `media/`, shown with
-`<figure class="media" data-media="name.png" data-alt="…">`, and are published
-with the deck.
-
-## Writing slides
-
-Each slide is a `<section class="slide">` on a 1920×1080 stage. Lay slides
-out in stage pixels and the deck scales them to fit the screen.
-
-```html
-<section class="slide" data-title="Agenda" data-lens="1600 600 250">
-  <h2 class="rise">Agenda</h2>
-  …
-  <aside class="notes"><p>Shown in the speaker view.</p></aside>
-</section>
-```
-
-- `data-glass` shows the glass background on this slide; without it the slide
-  is flat.
-- `data-lens="x y r"` is where the lens sits on a glass slide and how big it
-  is, in stage pixels. Give up to three, separated by commas
-  (`"1520 470 330, 1130 860 54"` is a lens with a bead beside it), or `none`.
-- `data-title` names the slide in the tab and the speaker view.
-- `data-logo` puts the Mycelium mark inside the slide's first lens.
-- `data-bare` hides the footer. On the `.deck` itself, `data-talk` names the
-  talk in the tab and the speaker view, and `data-footer` puts a line in the
-  middle of every footer.
-- `.rise` elements arrive one after another when their slide opens.
-- `.step` elements are revealed one per key press before the deck moves on. A
-  step with its own `data-lens` moves the lens while it is the latest one shown.
-- `.pane` is frosted glass. Use it for anything that sits over the lens.
-- `<div class="timer" data-minutes="10" style="--x:1500px; --y:560px">` is a
-  countdown centred on that point: click to start or pause, double-click to
-  reset. The exercise slide centres one on its lens.
-
-`deck.css` has a layout for each of these, and `index.html` uses some of them: `layout-title`, a terminal
-(`layout-terminal`), an agenda (`.agenda`), `layout-section`,
-`layout-statement`, `.cards`, `layout-diagram` (an SVG in stage coordinates
-with the lens over its centre), a flow of `.step`s, `.numbers`,
-`layout-exercise` with a timer, `layout-image`, `layout-app` (the live app), `.compare`,
-`layout-isnt` (two "not" panes and a line revealed under them), `layout-lanes` (the room's
-chat over parallel task threads), `.points` (three short points under a statement),
-`layout-trio` (three big lines, one per press) and `layout-close`.
-Copy the one closest to what you need.
+- Mycelium is built by the Outshift team, with Julia Valenti.
+- Accord and Concord are simplified versions of L9 protocols from the Internet
+  of Cognition team.
+- The slide framework (`deck.css`, `deck.js`, `scenes.js` and the rest) comes
+  from the Mycelium workshop deck. See `../workshop/README.md` for how it
+  works: layouts, steps, scenes, wires and live panes. One change here:
+  `scenes.js` supports `data-start-stage`, so a slide can show a single stage
+  of the coworkers scene.
 
 ## Files
 
 | | |
 |---|---|
-| `index.html` | the slides |
-| `deck.css` | palette (dark, and light under `data-theme="light"`), type, layouts, print |
-| `deck.js` | fitting the stage, keys, steps, overview, speaker view, timers |
-| `lens.js` | the background: the motes and the lens, in one WebGL shader |
-| `logo.js` | the Mycelium mark, inlined, because a WebGL texture can't come from a `file://` image |
-| `term.js` | live terminals: xterm.js panes over the shells `serve.py` runs |
-| `app.js` | live app panes: the Mycelium app in a frame, its screenshot until it answers, with smooth zoom |
-| `ink.js` | drawing over the deck: pen, highlighter and laser ink, kept per slide |
-| `scenes.js` | the living diagrams: one canvas per scene slide, moved on by the slide's steps |
-| `flat.js` | the wires between a flat diagram's boxes, and callouts beside a terminal pane |
-| `board.png` | the board slide's still, until the live app answers |
-| `banner.png` | the website slide's still, until the page answers |
-| `logo.png` | the Mycelium mark in the footer and the tab |
-| `serve.py` | serves the deck on 127.0.0.1 and runs a shell on a pseudo-terminal per pane |
-
-With `prefers-reduced-motion`, the motes hold still and the lens jumps
-between positions. Without WebGL, the CSS lens from print is used on screen.
+| `index.html` | the slides, with speaker notes |
+| `deck.css`, `deck.js`, `scenes.js`, `flat.js`, `lens.js`, `logo.js`, `term.js`, `app.js`, `ink.js` | the deck framework, from the workshop deck |
+| `media/` | logos, the room screenshot, icons, and the demo videos if saved |
+| `people/` | headshots |
+| `board.png` | the board slide's screenshot |
