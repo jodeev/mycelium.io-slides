@@ -134,7 +134,14 @@
     <p class="lede rise">A starting set of primitives for agents that work as peers, not as subagents.</p>
     <div class="byline rise"><span>Jodee Varney</span><span class="dot"></span><span>Outshift by Cisco</span><span class="dot"></span><span>AGNTCon + MCPCon NA</span><span class="dot"></span><span>October 2026</span></div>
     <aside class="notes">
-      <p>Thanks for coming. 25 minutes: why coordination between peer agents is its own problem, what we've learned building for it, and a short demo of coordination primitives in Mycelium. (~1 min)</p>
+      <ul>
+        <li>Thanks for coming.</li>
+        <li>I will be talking about swarm, or peer-to-peer, agentic systems, and the tools needed to help these agent teams actually coordinate and collaborate.</li>
+        <li>I'll show some of those tools using Mycelium, an open source project we've been working on.</li>
+        <li>The abstract mentions OpenClaw-style agent systems. We've moved beyond OpenClaw to other kinds of personal agents, specifically coding agents, which I expect most of you are actually using.</li>
+        <li>You should leave with the problems, some practical approaches, when swarm fits, and the infrastructure it needs.</li>
+        <li>And I'll be upfront about what we still don't know. (~1 min)</li>
+      </ul>
     </aside>
   </section>
 
@@ -162,11 +169,9 @@
     <aside class="notes">
       <ul>
         <li>I'm a Principal Product Manager at Outshift by Cisco, based in Portland, Oregon.</li>
-        <li>I work on the Internet of Cognition now. Before that I worked on AGNTCY, where Outshift is a founding member.</li>
-        <li>Historically I was involved in OpenTelemetry at the CNCF.</li>
-        <li>I'm in the AAIF working group on workflows and process integration (wg-workflows-and-process-integration).</li>
-        <li>AGNTCon is an AAIF conference, so say hello if you are involved in any working groups.</li>
-        <li>I will be talking about Mycelium, which is a project from our Outshift team, built with Julia Valenti. (~0.5 min)</li>
+        <li>I am part of a team at Outshift working on what we call the Internet of Cognition, and Mycelium, which is built with my amazing colleague Julia Valenti.</li>
+        <li>Before that I worked on AGNTCY, where Outshift is a founding member.</li>
+        <li>I'm also an active member of the AAIF working group on workflows and process integration. (~0.5 min)</li>
       </ul>
     </aside>
   </section>
@@ -364,6 +369,7 @@
         <li>From Mycelium you can spin up agents in the coding harness of your choice, like Claude Code, Codex or Cursor, and give them a name and instructions.</li>
         <li>You run them as always-on agents in a shared room, so you can watch how they work together.</li>
         <li>It's where we try out the coordination primitives.</li>
+        <li>Mycelium is open source, and the code is linked at the end.</li>
         <li>You may have heard about Buzz in Thursday's keynote, or gone to their breakout session. Our approach is not completely different, but we are tightly focused on agent teams. We use Mycelium as a playground to test collaboration engines and protocols that make these teams more effective. (~1 min)</li>
       </ul>
     </aside>
@@ -586,11 +592,12 @@
       <ul>
         <li>So that still leaves us with questions.</li>
         <li>We use Mycelium every day. The Mycelium code base and some of our own internal tools are written using agent teams in Mycelium.</li>
-        <li>There's plenty we don't know. These are some key questions that we will continue to work on:</li>
-        <li>Token cost</li>
-        <li>Trust and authentication</li>
-        <li>Scale</li>
-        <li>Coordination primitives, and we are already adding more: the verifier, and we see a need for drift detection, security guardians, and so on. (~1.5 min)</li>
+        <li>There's plenty we don't know. These are some key questions that we will continue to work on.</li>
+        <li><b>Token cost:</b> these coordination tools cost tokens, and we know it. Could it be more efficient?</li>
+        <li><b>Other companies' agents:</b> this is a trust and authentication issue, which many groups are looking at. Mycelium assumes all agents are trusted at the moment.</li>
+        <li><b>Scale:</b> so far we've run relatively small teams.</li>
+        <li><b>Coordination primitives:</b> we expect to need more than the ones we have. We are already adding more, like the verifier, and we see a need for drift detection, security guardians, and so on.</li>
+        <li>Net out: we build with Mycelium every day, and these are the open questions we are still working on. These are problems we need to solve as an industry. (~1.5 min)</li>
       </ul>
     </aside>
   </section>
@@ -603,6 +610,7 @@
       <ul>
         <li>Swarm has benefits, and sometimes we know that we will have peer interactions and need to manage them effectively.</li>
         <li>To manage the lack of shared intent, shared context and shared reasoning that you will see with these agent teams, you need effective collaboration tools that close these gaps.</li>
+        <li>These pieces (rooms, shared state, mentions and turns, and the engines) are the infrastructure swarms need.</li>
         <li>Mycelium is a playground to try this out.</li>
         <li>We welcome your input on our project. Use it, ask questions, provide feedback. (~1.5 min)</li>
       </ul>
